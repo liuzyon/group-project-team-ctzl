@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/DenseJacobi.h
+Jacobi.h
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/Jacobi.h
+
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/Jacobi.h
+Solver.h
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/Solver.h
+
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/Matrix.h
+
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/Solver.h
+Matrix.h
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/Matrix.h
+vector
+-
+
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/main.cpp
+iostream
+-
+Matrix.h
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/Matrix.h
+DenseJacobi.h
+/Users/zhiyongliu/Documents/Imperial_Github/assessment1/DenseJacobi.h
+
