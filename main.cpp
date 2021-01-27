@@ -1,10 +1,11 @@
 #include <iostream>
 #include "Matrix.h"
 #include "DenseJacobi.h"
+#include "CSRMatrix.h"
 
 int main()
 {
-    int rows = 5;
+/*    int rows = 5;
     int cols = 5;
 
     // Testing our matrix class
@@ -38,5 +39,18 @@ int main()
     }
     // Don't forget to call delete (ie the destructor) once we're done, otherwise
     // we will leak memory from the new called inside our matrix
-    delete dense_mat;
+    delete dense_mat;*/
+
+    //CSRMatrix
+    int rows = 3;
+    int columns = 3;
+    int a[4] = {0, 2, 3, 6};
+    int b[6] = {0, 2, 2, 0, 1, 2};
+    double c[6] = {1, 2, 3, 4, 5, 6};
+    int *int_ptr = a;
+    int *indices = b;
+    double *values_ptr= c;
+    auto *CSR_mat = new CSRMatrix(rows, columns, int_ptr, indices, values_ptr);
+    CSR_mat->printMatrix();
+    delete CSR_mat;
 }

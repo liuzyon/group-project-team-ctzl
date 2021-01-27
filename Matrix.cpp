@@ -1,6 +1,10 @@
 #include <iostream>
 #include "Matrix.h"
 
+Matrix::Matrix(){
+
+}
+
 // Constructor - using an initialisation list here
 Matrix::Matrix(int rows, int cols, bool preallocate): rows(rows), cols(cols), size_of_values(rows * cols), preallocated(preallocate)
 {
