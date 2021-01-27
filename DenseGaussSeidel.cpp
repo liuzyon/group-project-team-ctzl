@@ -12,7 +12,7 @@ std::vector<double> DenseGaussSeidel::solve(Matrix& A, std::vector<double>& b)
 {
     // the output result of solver
     std::vector<double> x;
-    const int n_iter = 10;
+    const int n_iter = 100;
     int n = 0;
     int size = b.size();
 
