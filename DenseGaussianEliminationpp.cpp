@@ -11,6 +11,7 @@ DenseGaussEPP::~DenseGaussEPP()
 
 std::vector<double> DenseGaussEPP::solve(Matrix& A, std::vector<double>& b) {
 	// This method is direct calculate the answer of Ax=b. 
+	// This solver is only for the matix which exist the only answer x.
 	// The computaional cost of Gaussian Elimination is O(n^3).
 	//and we fix the issue we meet in DenseGaussE class we use partial pivoting.
 	//This is an upgrade of Gaussian Elimination method.

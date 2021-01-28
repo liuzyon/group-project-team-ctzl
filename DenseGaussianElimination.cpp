@@ -10,6 +10,7 @@ DenseGaussE::~DenseGaussE()
 
 std::vector<double> DenseGaussE::solve(Matrix& A, std::vector<double>& b) {
 	// This method is direct calculate the answer of Ax=b. 
+	// This solver is only for the matix which exist the only answer x and no 0 on diagnal entries.
 	// The computaional cost of Gaussian Elimination is O(n^3).
 	//and we will also highlight issues that arise when the value is non-zero but small in pivoting.
 	std::vector<double> x;
