@@ -6,6 +6,7 @@
 #include"DenseGaussianEliminationpp.h"
 #include "CSRMatrix.h"
 #include"DenseGaussSeidel.h"
+#include "DenseLUFactorisation.h"
 
 
 int main()
@@ -16,32 +17,32 @@ int main()
     //~~~~test one~~~~~
     //~~~~~~~~~~~~~~~~~
     //specific test for DenseGaussianEliminationpp solver
-    int rows = 3;
-    int cols = 3;
-    double input[9] = { 2, 3, -4, 6, 8, 2, 4, 8, -6 };
-    auto* A_GEpp = new Matrix(rows, cols, input);
-    std::cout << "A input:\n";
-    A_GEpp->printMatrix();
-    std::vector<double> b = { 5., 3., 19. };
-    std::cout << "b input:\n";
-    for (int i = 0; i < b.size(); i++)
-    {
-        std::cout << b[i] << ' ';
-    }
-
-    DenseGaussEPP gepp;
-    std::vector<double> xgepp = gepp.solve(*A_GEpp, b);
-
-    std::cout << "\nx output:\n";
-    for (int i = 0; i < xgepp.size(); i++)
-    {
-        std::cout << xgepp[i] << ' ';
-    }
-    
-    Test t;
-    bool res = t.test(*A_GEpp, b, xgepp);
-    std::cout << "\n" << res;
-    delete A_GEpp;
+//    int rows = 3;
+//    int cols = 3;
+//    double input[9] = { 2, 3, -4, 6, 8, 2, 4, 8, -6 };
+//    auto* A_GEpp = new Matrix(rows, cols, input);
+//    std::cout << "A input:\n";
+//    A_GEpp->printMatrix();
+//    std::vector<double> b = { 5., 3., 19. };
+//    std::cout << "b input:\n";
+//    for (int i = 0; i < b.size(); i++)
+//    {
+//        std::cout << b[i] << ' ';
+//    }
+//
+//    DenseGaussEPP gepp;
+//    std::vector<double> xgepp = gepp.solve(*A_GEpp, b);
+//
+//    std::cout << "\nx output:\n";
+//    for (int i = 0; i < xgepp.size(); i++)
+//    {
+//        std::cout << xgepp[i] << ' ';
+//    }
+//
+//    Test t;
+//    bool res = t.test(*A_GEpp, b, xgepp);
+//    std::cout << "\n" << res;
+//    delete A_GEpp;
     //~~~~~~~~~~~~~~~~~
     //~~~~test two~~~~~
     //~~~~~~~~~~~~~~~~~
@@ -131,4 +132,19 @@ int main()
     //auto *CSR_mat = new CSRMatrix(rows, columns, int_ptr, indices, values_ptr);
     //CSR_mat->printMatrix();
     //delete CSR_mat;
+
+    // Test LUFactorisation
+    int rows = 3;
+    int cols = 3;
+    double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
+    auto* A_LUFactorisation = new Matrix(rows, cols, input);
+    std::vector<double> b = { 2., 1., 5. };
+    DenseLUFactorisation sv;
+    std::vector<double> x = sv.solve(*A_LUFactorisation, b);
+    // expect output: -4.375 -2.75 2.5
+    for (int i = 0; i < x.size(); i++)
+    {
+        std::cout << x[i] << ' ';
+    }
+
 }

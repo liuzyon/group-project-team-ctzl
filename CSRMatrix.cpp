@@ -2,10 +2,11 @@
 // Created by Zhiyong Liu on 2021/1/27.
 //
 
-#include "CSRMatrix.h"
+/*#include "CSRMatrix.h"
 
 CSRMatrix::CSRMatrix(int rows, int columns, int *ind_ptr, int *indices, double *values_ptr)
 {
+
     this->rows = rows;
     this->cols = columns;
     this->size_of_values = rows * columns;
@@ -27,4 +28,4 @@ CSRMatrix::CSRMatrix(int rows, int columns, int *ind_ptr, int *indices, double *
 CSRMatrix::~CSRMatrix()
 {
     delete[] this->values;
-}
+}*/

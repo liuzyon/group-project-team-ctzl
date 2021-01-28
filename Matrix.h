@@ -3,7 +3,7 @@
 class Matrix
 {
 public:
-   Matrix();
+//   Matrix();
    // constructor where we want to preallocate ourselves
    Matrix(int rows, int cols, bool preallocate);
    // constructor where we already have allocated memory outside
