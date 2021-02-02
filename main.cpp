@@ -71,11 +71,13 @@ int main()
 
 template <class T>
 void printVector(T* vec, int size) {
+    cout << "[";
     for (int i = 0; i < size; ++i)
     {
-        cout << vec[i] << " ";
+        cout << vec[i];
+        if (i != size-1) cout << ", ";
     }
-    cout << endl;
+    cout << "]" << endl;
 }
 
 void printStartTag(string s) {
