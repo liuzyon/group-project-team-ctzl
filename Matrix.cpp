@@ -1,27 +1,26 @@
 #include <iostream>
 #include "Matrix.h"
 
-//Matrix::Matrix(){
-//
-//}
-
 // Constructor - using an initialisation list here
-Matrix::Matrix(int rows, int cols, bool preallocate): rows(rows), cols(cols), size_of_values(rows * cols), preallocated(preallocate)
+template <class T>
+Matrix<T>::Matrix(int rows, int cols, bool preallocate): rows(rows), cols(cols), size_of_values(rows * cols), preallocated(preallocate)
 {
    // If we want to handle memory ourselves
    if (this->preallocated)
    {
       // Must remember to delete this in the destructor
-      this->values = new double[size_of_values];
+      this->values = new T[size_of_values];
    }
 }
 
-// Constructor - now just setting the value of our double pointer
-Matrix::Matrix(int rows, int cols, double *values_ptr): rows(rows), cols(cols), size_of_values(rows * cols), values(values_ptr)
+// Constructor - now just setting the value of our T pointer
+template <class T>
+Matrix<T>::Matrix(int rows, int cols, T *values_ptr): rows(rows), cols(cols), size_of_values(rows * cols), values(values_ptr)
 {}
 
 // destructor
-Matrix::~Matrix()
+template <class T>
+Matrix<T>::~Matrix()
 {
    // Delete the values array
    if (this->preallocated){
@@ -30,7 +29,8 @@ Matrix::~Matrix()
 }
 
 // Just print out the values in our values array
-void Matrix::printValues() 
+template <class T>
+void Matrix<T>::printValues() 
 { 
    std::cout << "Printing values" << std::endl;
 	for (int i = 0; i< this->size_of_values; i++)
@@ -41,7 +41,8 @@ void Matrix::printValues()
 }
 
 // Explicitly print out the values in values array as if they are a matrix
-void Matrix::printMatrix() 
+template <class T>
+void Matrix<T>::printMatrix() 
 { 
    std::cout << "Printing matrix" << std::endl;
    for (int j = 0; j< this->rows; j++)
@@ -58,11 +59,12 @@ void Matrix::printMatrix()
 
 // Do matrix matrix multiplication
 // output = this * mat_right
-void Matrix::matMatMult(Matrix& mat_right, Matrix& output)
+template <class T>
+void Matrix<T>::matMatMult(Matrix& mat_left, Matrix& output)
 {
 
    // Check our dimensions match
-   if (this->cols != mat_right.rows)
+   if (this->cols != output.cols)
    {
       std::cerr << "Input dimensions for matrices don't match" << std::endl;
       return;
@@ -72,7 +74,7 @@ void Matrix::matMatMult(Matrix& mat_right, Matrix& output)
    if (output.values != nullptr) 
    {
       // Check our dimensions match
-      if (this->rows != output.rows || this->cols != output.cols)
+      if (this->rows != mat_left.cols || mat_left.rows != output.rows)
       {
          std::cerr << "Input dimensions for matrices don't match" << std::endl;
          return;
@@ -81,7 +83,8 @@ void Matrix::matMatMult(Matrix& mat_right, Matrix& output)
    // The output hasn't been preallocated, so we are going to do that
    else
    {
-      output.values = new double[this->rows * mat_right.cols];
+      output.values = new T[this->rows * mat_left.cols];
+      // Don't forget to set preallocate to true now it is protected
       output.preallocated = true;
    }
 
@@ -99,9 +102,9 @@ void Matrix::matMatMult(Matrix& mat_right, Matrix& output)
    {
       for(int k = 0; k < this->cols; k++)
       {
-         for(int j = 0; j < mat_right.cols; j++)
+         for(int j = 0; j < mat_left.cols; j++)
          {            
-               output.values[i * output.cols + j] += this->values[i * this->cols + k] * mat_right.values[k * mat_right.cols + j];
+               output.values[i * output.cols + j] += this->values[i * this->cols + k] * mat_left.values[k * mat_left.cols + j];
          }
       }
    }
