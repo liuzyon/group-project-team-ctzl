@@ -185,6 +185,9 @@ int main()
 
     test.testDense(A, b, x);
 
+
+    delete[] b;
+    delete[] x;
 }
 
 template <class T>
