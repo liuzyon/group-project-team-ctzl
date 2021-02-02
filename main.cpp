@@ -3,6 +3,7 @@
 #include "Matrix.h"
 #include "Matrix.cpp"
 #include "CSRMatrix.h"
+#include "CSRMatrix.cpp"
 #include "Solver.h"
 #include "Solver.cpp"
 
@@ -175,5 +176,71 @@ int main()
 
     delete[] b;
     delete[] x;
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // test for sparse mmatrix
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    cout << endl << endl;
+    int sparse_rows = 5;
+    int sparse_cols = 5;
+    int nnzs = 12;
+
+    double sparse_values[12] = {10,2,3,40,5,6,70,8,9,10,110,120};
+    int row_position[6] = {0,2,5,9,11,12};
+    int col_index[12] = {0,3,0,1,3,0,2,3,4,2,3,4};
+   
+    auto *sparse_mat = new CSRMatrix<double>(sparse_rows, sparse_cols, nnzs, sparse_values, row_position, col_index);
+
+    // Now let's print it
+    sparse_mat->printMatrix();
+    cout << endl;
+
+
+    double* sparse_b = new double[5]{5,3,8,1,4};
+    double* sparse_x = new double[5];
+    // store sparse matvec result
+    double* sparse_output = new double[5];
+
+
+    // if no input for user tolerance, default is 1e-6
+    sv.sparse_jacobi_solver(*sparse_mat, sparse_b, sparse_x, 0.0001);
+
+    cout << "Sparse Jacobi result (tol = 1e-4): " << endl;
+    for (int i = 0; i < sparse_cols; i++)
+    {
+       cout << sparse_x[i] << " ";
+    }
+    cout << endl << endl;
+    sparse_mat->matVecMult(sparse_x, sparse_output);
+    // Let's print the results
+    cout << "Mat vec using above result " << endl;
+    for (int i = 0; i < sparse_rows; i++)
+    {
+       cout << " " << sparse_output[i];
+    }
+    cout << endl << endl;
+
+
+   // if no input for user tolerance, default is 1e-6
+   sv.sparse_gauss_seidel_solver(*sparse_mat, sparse_b, sparse_x);
+   cout << "Sparse Gauss Seidel result: (tol = 1e-6)" << endl;
+   for (int i = 0; i < sparse_cols; i++)
+   {
+      cout << sparse_x[i] << " ";
+   }
+   cout << endl << endl;
+   sparse_mat->matVecMult(sparse_x, sparse_output);
+   // Let's print the results
+   cout << "Mat vec using above result " << endl;
+   for (int i = 0; i < sparse_rows; i++)
+   {
+      cout << " " << sparse_output[i];
+   }
+   cout << endl;
+
+   delete sparse_mat;
+   delete[] sparse_output;
+   delete[] sparse_x;
+   delete[] sparse_b;
 
 }
