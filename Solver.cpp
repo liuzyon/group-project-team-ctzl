@@ -232,7 +232,6 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
     //make sure the sizes of matixs are what we can calculate
     if (A.cols != A.rows) {
         std::cerr << "Input dimensions for matrices don't match" << std::endl;
-        return x;
     }
 
     double *L = new double[A.rows*A.cols]();
@@ -290,6 +289,7 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
         }
         y[k] = (b[k] - s) / L[k*A.cols+k];
     }
+
 
     //Backward substitution
     // A = U, b = y, x = x

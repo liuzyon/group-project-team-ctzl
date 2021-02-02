@@ -1,9 +1,12 @@
 #include <iostream>
 #include <vector>
 #include "Matrix.h"
-//#include "Matrix.cpp"
+#include "Matrix.cpp"
 #include "CSRMatrix.h"
 #include "Solver.h"
+#include "Solver.cpp"
+
+using namespace std;
 
 int main()
 {
@@ -130,10 +133,6 @@ int main()
     //delete CSR_mat;
 
     // Test LUFactorisation
-    int rows = 3;
-    int cols = 3;
-    double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
-    Matrix<double> a(rows, cols, input);
 //    auto* A_LUFactorisation = new Matrix(rows, cols, input);
 //    std::vector<double> b = { 2., 1., 5. };
 //    Solver<double> sv;
@@ -143,5 +142,19 @@ int main()
 //    {
 //        std::cout << x[i] << ' ';
 //    }
+
+    cout << "Dense Matrix" << endl;
+    int rows = 3;
+    int cols = 3;
+    double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
+    Matrix<double> A_LUFactorisation(rows, cols, input);
+    double *b = new double [3]{ 2., 1., 5.};
+    double *x = new double [3];
+    Solver<double> sv;
+    sv.DenseLUFactorisationSolve(A_LUFactorisation, b, x);
+    for (int i = 0; i < 3; ++i)
+    {
+        cout << x[i] << " ";
+    }
 
 }

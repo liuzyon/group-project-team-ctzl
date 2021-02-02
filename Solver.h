@@ -25,7 +25,6 @@ public:
 
     std::vector<double> DenseJacobiSolve(Matrix<T>& A, std::vector<double>& b);
 
-//    std::vector<double> DenseLUFactorisationSolve(Matrix<T>& A, std::vector<double>& b);
     void DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x);
 
     void printA();
