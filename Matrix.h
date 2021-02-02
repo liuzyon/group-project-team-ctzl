@@ -21,6 +21,9 @@ public:
    // Perform some operations with our matrix
    void matMatMult(Matrix<T>& mat_left, Matrix<T>& output);
 
+   // do the matrix vector multiplication
+   virtual void matVecMult(T* input, T* output);
+
    // Explicitly using the C++11 nullptr here
    T *values = nullptr;   
    int rows = -1;
