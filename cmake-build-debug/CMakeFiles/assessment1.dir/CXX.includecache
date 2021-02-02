@@ -23,6 +23,8 @@ Solver.h
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
 Matrix.h
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
+CSRMatrix.h
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/CSRMatrix.h
 math.h
 -
 iostream
@@ -31,6 +33,8 @@ iostream
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
 Matrix.h
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
+CSRMatrix.h
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/CSRMatrix.h
 vector
 -
 

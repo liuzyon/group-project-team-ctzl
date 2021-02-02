@@ -140,18 +140,18 @@ void Solver<T>::dense_gauss_seidel_solver(Matrix<T>& A, T* b, T* x, double tol)
 
 
 template <class T>
-std::vector<double> Solver<T>::DenseGaussESolve(Matrix<T> &A, std::vector<double> &b)
+void Solver<T>::DenseGaussESolve(Matrix<T> &A, T* b, T* x)
 {
     // This method is direct calculate the answer of Ax=b.
     // This solver is only for the matix which exist the only answer x and no 0 on diagnal entries.
     // The computaional cost of Gaussian Elimination is O(n^3).
     //and we will also highlight issues that arise when the value is non-zero but small in pivoting.
-    std::vector<double> x;
-    x.resize(b.size());
     //make sure the sizes of matixs are what we can calculate
-    if (A.cols != A.rows || A.cols != b.size()) {
+    int size = A.cols;
+
+    if (A.cols != A.rows) {
         std::cerr << "Input dimensions for matrices don't match" << std::endl;
-        return x;
+        return;
     }
     //triangularise
     // covert A into upper triangluar form through row operations.
@@ -166,7 +166,7 @@ std::vector<double> Solver<T>::DenseGaussESolve(Matrix<T> &A, std::vector<double
             s = A.values[i * A.cols + k] / A.values[k * A.cols + k];
             //Update the current row of A by looping over the column j
             //start the loop from k as we can assume the entries before this are already zero
-            for (int j = k; j < b.size(); j++) {
+            for (int j = k; j < size; j++) {
                 A.values[i * A.cols + j] = A.values[i * A.cols + j] - s * A.values[k * A.cols + j];
             }
             // and update the corresponding entry of b
@@ -177,9 +177,9 @@ std::vector<double> Solver<T>::DenseGaussESolve(Matrix<T> &A, std::vector<double
     //backsubstitude
 
     //start at the end (row n-1) and work backwards
-    for (int k = b.size() - 1; k > -1; k--) {
+    for (int k = size - 1; k > -1; k--) {
         s = 0;
-        for (int j = k + 1; j < b.size(); j++) {
+        for (int j = k + 1; j < size; j++) {
             //sum of Akj*xj from k+1 to n
             s = s + A.values[k * A.cols + j] * x[j];
         }
@@ -187,23 +187,20 @@ std::vector<double> Solver<T>::DenseGaussESolve(Matrix<T> &A, std::vector<double
         x[k] = (b[k] - s) / A.values[k * A.cols + k];
     }
 
-    return x;
 }
 
 template <class T>
-std::vector<double> Solver<T>::DenseGaussEPPSolve(Matrix<T> &A, std::vector<double> &b)
+void Solver<T>::DenseGaussEPPSolve(Matrix<T> &A, T* b, T* x)
 {
     // This method is direct calculate the answer of Ax=b.
     // This solver is only for the matix which exist the only answer x.
     // The computaional cost of Gaussian Elimination is O(n^3).
     //and we fix the issue we meet in DenseGaussE class we use partial pivoting.
     //This is an upgrade of Gaussian Elimination method.
-    std::vector<double> x;
-    x.resize(b.size());
+    int size = A.cols;
     //make sure the sizes of matixs are what we can calculate
-    if (A.cols != A.rows || A.cols != b.size()) {
+    if (A.cols != A.rows) {
         std::cerr << "Input dimensions for matrices don't match" << std::endl;
-        return x;
     }
     //triangularise
     // covert A into upper triangluar form through row operations.
@@ -248,7 +245,7 @@ std::vector<double> Solver<T>::DenseGaussEPPSolve(Matrix<T> &A, std::vector<doub
             s = A.values[i * A.cols + k] / A.values[k * A.cols + k];
             //Update the current row of A by looping over the column j
             //start the loop from k as we can assume the entries before this are already zero
-            for (int j = k; j < b.size(); j++) {
+            for (int j = k; j < size; j++) {
                 A.values[i * A.cols + j] = A.values[i * A.cols + j] - s * A.values[k * A.cols + j];
             }
             // and update the corresponding entry of b
@@ -259,17 +256,15 @@ std::vector<double> Solver<T>::DenseGaussEPPSolve(Matrix<T> &A, std::vector<doub
     //backsubstitude
 
     //start at the end (row n-1) and work backwards
-    for (int k = b.size() - 1; k > -1; k--) {
+    for (int k = size - 1; k > -1; k--) {
         s = 0;
-        for (int j = k + 1; j < b.size(); j++) {
+        for (int j = k + 1; j < size; j++) {
             //sum of Akj*xj from k+1 to n
             s = s + A.values[k * A.cols + j] * x[j];
         }
         //xk = (1/akk)*(bk - sum of Akj*xj from k+1 to n)
         x[k] = (b[k] - s) / A.values[k * A.cols + k];
     }
-
-    return x;
 
 }
 

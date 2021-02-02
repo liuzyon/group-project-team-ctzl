@@ -29,11 +29,11 @@ public:
     void sparse_gauss_seidel_solver(CSRMatrix<T>& A, T* b, T* x, double tol = 1e-6);
 
     // Dense Gaussian Elimination solve
-    std::vector<double> DenseGaussESolve(Matrix<T>& A, std::vector<double>& b);
+    void DenseGaussESolve(Matrix<T>& A, T* b, T* x);
 
-    std::vector<double> DenseGaussEPPSolve(Matrix<T>& A, std::vector<double>& b);
+    void DenseGaussEPPSolve(Matrix<T>& A, T* b, T* x);
 
-//    std::vector<double> DenseLUFactorisationSolve(Matrix<T>& A, std::vector<double>& b);
+
     void DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x);
 
     void printA();

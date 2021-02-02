@@ -12,13 +12,15 @@ using namespace std;
 
 template <class T>
 void printVector(T* vector, int size);
+void printStartTag(string s);
+void printEndTag();
 
 int main()
 {
     cout << endl;
-    cout << "--------------------------------------------" << endl;
-    cout << "   Dense Matrix" << endl;
-    cout << "--------------------------------------------" << endl;
+    cout << "------------------------------------------------------" << endl;
+    cout << "                   Dense Matrix" << endl;
+    cout << "------------------------------------------------------" << endl;
 //    cout << endl;
     // create A, b
     int rows = 3;
@@ -28,29 +30,41 @@ int main()
     double *b = new double [3]{ 2., 1., 5.};
     double *x = new double [3];
     cout << "--------------------------------" << endl;
-    cout << "   Create Example A and b" << endl;
+    cout << "   Create Example A and b:" << endl;
     cout << "--------------------------------" << endl;
     cout << "A created:" << endl;
     A.printMatrix();
     cout << endl;
     cout << "b created:" << endl;
     printVector(b, A.cols);
-    cout << endl;
-
     Test<double> test;
     Solver<double> sv;
+    cout << "--------------------------------" << endl;
+    cout << "   Initialization completed!" << endl;
+    cout << "--------------------------------" << endl;
 
 
 
-    cout << "<-------------------------------->" << endl;
-    cout << "   DenseLUFactorisation Solve" << endl;
-    cout << "<-------------------------------->" << endl;
-    sv.DenseLUFactorisationSolve(A, b, x);
-
+    printStartTag("Dense Gaussian Elimination Solve");
+    sv.DenseGaussESolve(A, b, x);
     cout << "x solved:" << endl;
     printVector(x, A.cols);
-
     test.testDense(A, b, x);
+    printEndTag();
+
+    printStartTag("Dense Gaussian Elimination PP Solve");
+    sv.DenseGaussEPPSolve(A, b, x);
+    cout << "x solved:" << endl;
+    printVector(x, A.cols);
+    test.testDense(A, b, x);
+    printEndTag();
+
+    printStartTag("DenseLUFactorisation Solve");
+    sv.DenseLUFactorisationSolve(A, b, x);
+    cout << "x solved:" << endl;
+    printVector(x, A.cols);
+    test.testDense(A, b, x);
+    printEndTag();
 
 
     delete[] b;
@@ -64,4 +78,17 @@ void printVector(T* vec, int size) {
         cout << vec[i] << " ";
     }
     cout << endl;
+}
+
+void printStartTag(string s) {
+    cout << endl << endl;
+    cout << "<------------------------------------------" << endl;
+    cout << "\t" << s << endl;
+    cout << "<------------------------------------------" << endl;
+}
+
+void printEndTag() {
+    cout << "---------------------->" << endl;
+    cout << "   End" << endl;
+    cout << "---------------------->" << endl;
 }

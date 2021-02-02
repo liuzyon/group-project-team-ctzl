@@ -8,10 +8,12 @@ CMakeFiles/assessment1.dir/CSRMatrix.cpp.o: ../Matrix.h
 CMakeFiles/assessment1.dir/Matrix.cpp.o: ../Matrix.cpp
 CMakeFiles/assessment1.dir/Matrix.cpp.o: ../Matrix.h
 
+CMakeFiles/assessment1.dir/Solver.cpp.o: ../CSRMatrix.h
 CMakeFiles/assessment1.dir/Solver.cpp.o: ../Matrix.h
 CMakeFiles/assessment1.dir/Solver.cpp.o: ../Solver.cpp
 CMakeFiles/assessment1.dir/Solver.cpp.o: ../Solver.h
 
+CMakeFiles/assessment1.dir/Test.cpp.o: ../CSRMatrix.h
 CMakeFiles/assessment1.dir/Test.cpp.o: ../Matrix.h
 CMakeFiles/assessment1.dir/Test.cpp.o: ../Solver.h
 CMakeFiles/assessment1.dir/Test.cpp.o: ../Test.cpp

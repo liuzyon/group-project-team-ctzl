@@ -19,9 +19,7 @@ Test<T>::~Test()
 template <class T>
 bool Test<T>::testDense(Matrix<T>& A, T* b, T* x)
 {
-    cout << "--------------------------------" << endl;
-    cout << "   Check if Ax == b" << endl;
-    cout << "--------------------------------" << endl;
+    cout << endl << "Check if Ax == b:" << endl;
     int size = A.cols;
     double *check_b = new double [A.cols];
     A.matVecMult(x, check_b);
