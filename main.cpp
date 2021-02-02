@@ -21,29 +21,27 @@ int main()
     cout << "------------------------------------------------------" << endl;
     cout << "                   Dense Matrix" << endl;
     cout << "------------------------------------------------------" << endl;
-//    cout << endl;
-    // create A, b
+    cout << "--------------------------------" << endl;
+    cout << "   Create Example A and b:" << endl;
+    cout << "--------------------------------" << endl;
+    // create A, b, x
     int rows = 3;
     int cols = 3;
     double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
     Matrix<double> A(rows, cols, input);
     double *b = new double [3]{ 2., 1., 5.};
     double *x = new double [3];
-    cout << "--------------------------------" << endl;
-    cout << "   Create Example A and b:" << endl;
-    cout << "--------------------------------" << endl;
     cout << "A created:" << endl;
     A.printMatrix();
     cout << endl;
     cout << "b created:" << endl;
     printVector(b, A.cols);
+
     Test<double> test;
     Solver<double> sv;
     cout << "--------------------------------" << endl;
     cout << "   Initialization completed!" << endl;
     cout << "--------------------------------" << endl;
-
-
 
     printStartTag("Dense Gaussian Elimination Solve");
     sv.DenseGaussESolve(A, b, x);
@@ -59,7 +57,7 @@ int main()
     test.testDense(A, b, x);
     printEndTag();
 
-    printStartTag("DenseLUFactorisation Solve");
+    printStartTag("Dense LU Factorisation Solve");
     sv.DenseLUFactorisationSolve(A, b, x);
     cout << "x solved:" << endl;
     printVector(x, A.cols);

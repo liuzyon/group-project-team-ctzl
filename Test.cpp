@@ -12,9 +12,7 @@ Test<T>::Test()
 
 template <class T>
 Test<T>::~Test()
-{
-
-}
+{}
 
 template <class T>
 bool Test<T>::testDense(Matrix<T>& A, T* b, T* x)
