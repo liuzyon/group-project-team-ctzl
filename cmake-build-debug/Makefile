@@ -68,10 +68,10 @@ RM = "/Users/zhiyongliu/Library/Application Support/JetBrains/Toolbox/apps/CLion
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/zhiyongliu/Documents/Imperial_Github/assessment1
+CMAKE_SOURCE_DIR = /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/zhiyongliu/Documents/Imperial_Github/assessment1/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhiyongliu/Documents/Imperial_Github/assessment1/cmake-build-debug/CMakeFiles /Users/zhiyongliu/Documents/Imperial_Github/assessment1/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/cmake-build-debug/CMakeFiles /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhiyongliu/Documents/Imperial_Github/assessment1/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -143,59 +143,32 @@ assessment1/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/build
 .PHONY : assessment1/fast
 
-DenseJacobi.o: DenseJacobi.cpp.o
+CSRMatrix.o: CSRMatrix.cpp.o
 
-.PHONY : DenseJacobi.o
-
-# target to build an object file
-DenseJacobi.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/DenseJacobi.cpp.o
-.PHONY : DenseJacobi.cpp.o
-
-DenseJacobi.i: DenseJacobi.cpp.i
-
-.PHONY : DenseJacobi.i
-
-# target to preprocess a source file
-DenseJacobi.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/DenseJacobi.cpp.i
-.PHONY : DenseJacobi.cpp.i
-
-DenseJacobi.s: DenseJacobi.cpp.s
-
-.PHONY : DenseJacobi.s
-
-# target to generate assembly for a file
-DenseJacobi.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/DenseJacobi.cpp.s
-.PHONY : DenseJacobi.cpp.s
-
-Jacobi.o: Jacobi.cpp.o
-
-.PHONY : Jacobi.o
+.PHONY : CSRMatrix.o
 
 # target to build an object file
-Jacobi.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/Jacobi.cpp.o
-.PHONY : Jacobi.cpp.o
+CSRMatrix.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/CSRMatrix.cpp.o
+.PHONY : CSRMatrix.cpp.o
 
-Jacobi.i: Jacobi.cpp.i
+CSRMatrix.i: CSRMatrix.cpp.i
 
-.PHONY : Jacobi.i
+.PHONY : CSRMatrix.i
 
 # target to preprocess a source file
-Jacobi.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/Jacobi.cpp.i
-.PHONY : Jacobi.cpp.i
+CSRMatrix.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/CSRMatrix.cpp.i
+.PHONY : CSRMatrix.cpp.i
 
-Jacobi.s: Jacobi.cpp.s
+CSRMatrix.s: CSRMatrix.cpp.s
 
-.PHONY : Jacobi.s
+.PHONY : CSRMatrix.s
 
 # target to generate assembly for a file
-Jacobi.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/Jacobi.cpp.s
-.PHONY : Jacobi.cpp.s
+CSRMatrix.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assessment1.dir/build.make CMakeFiles/assessment1.dir/CSRMatrix.cpp.s
+.PHONY : CSRMatrix.cpp.s
 
 Matrix.o: Matrix.cpp.o
 
@@ -287,12 +260,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... assessment1"
-	@echo "... DenseJacobi.o"
-	@echo "... DenseJacobi.i"
-	@echo "... DenseJacobi.s"
-	@echo "... Jacobi.o"
-	@echo "... Jacobi.i"
-	@echo "... Jacobi.s"
+	@echo "... CSRMatrix.o"
+	@echo "... CSRMatrix.i"
+	@echo "... CSRMatrix.s"
 	@echo "... Matrix.o"
 	@echo "... Matrix.i"
 	@echo "... Matrix.s"
