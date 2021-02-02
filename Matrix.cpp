@@ -48,18 +48,19 @@ void Matrix<T>::printValues()
 // Explicitly print out the values in values array as if they are a matrix
 template <class T>
 void Matrix<T>::printMatrix() 
-{ 
-   std::cout << "Printing matrix" << std::endl;
+{
+//   std::cout << "Printing matrix" << std::endl;
    for (int j = 0; j< this->rows; j++)
    {  
       std::cout << std::endl;
       for (int i = 0; i< this->cols; i++)
       {
          // We have explicitly used a row-major ordering here
-         std::cout << this->values[i + j * this->cols] << " ";
+         std::cout << "\t" << this->values[i + j * this->cols] << "\t";
       }
    }
    std::cout << std::endl;
+
 }
 
 // Do matrix matrix multiplication
