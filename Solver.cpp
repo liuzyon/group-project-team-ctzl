@@ -1,5 +1,6 @@
 #include "Solver.h"
 #include "Matrix.h"
+#include <math.h>
 #include <iostream>
 
 template <class T>
@@ -11,6 +12,129 @@ template <class T>
 Solver<T>::~Solver()
 {
 }
+
+// this is a private function used in dense/sparse Jacobi and Gauss-Seidel
+// to calculate the error after 1 iteration and then compare with user tolerance
+template <class T>
+double Solver<T>::get_error(Matrix<T>& A, T* b, T* x, int size, double error)
+{
+    // calculate error between expected x and our A*x
+    // create a output pointer to store the result
+    T* output = new T[size];
+    A.matVecMult(x, output);
+    // compute the error
+    for (int i = 0; i < size; i++)
+    {
+        // calculate the norm
+        error += pow((output[i] - b[i]),2);
+    }
+    delete[] output;
+
+    // calculate the norm
+    return sqrt(error);
+}
+
+//Solver starts from below
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+template <class T>
+// there is a default user tolerance, can be changed by user
+void Solver<T>::dense_jacobi_solver(Matrix<T>& A, T* b, T* x, double tol)
+{
+    // max iteration if tolerance not reached
+    const int n_iter = 1000;
+    int n = 0;
+    int size = A.cols;
+
+    // initial guess of x is b
+    for (int i = 0; i < size; i++)
+    {
+        x[i] = b[i];
+    }
+
+    while(n < n_iter)
+    {
+        // x new here stores and updates all x values after 1 iteration
+        T* x_new = new T[size];
+        // error keeps track of the error after 1 iteration
+        double error = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            double sum = 0;
+            for (int j = 0; j < size; j++)
+            {
+                if (i != j)
+                {
+                    sum += A.values[i * size + j] * x[j];
+                }
+            }
+            x_new[i] = (b[i] - sum) / A.values[i * size + i];
+        }
+        // update x using x_new
+        for (int i = 0; i < size; i++)
+        {
+            x[i] = x_new[i];
+        }
+        delete[] x_new;
+
+        // get the current error
+        error = get_error(A, b, x, size, error);
+
+        // if below the tolerance, ends the iteration
+        if (error < tol)
+            return;
+        // else iterates
+        else
+            n++;
+    }
+}
+
+template <class T>
+void Solver<T>::dense_gauss_seidel_solver(Matrix<T>& A, T* b, T* x, double tol)
+{
+    // max iteration if tolerance not reached
+    const int n_iter = 1000;
+    int n = 0;
+    int size = A.cols;
+
+    // initial guess of x is b
+    for (int i = 0; i < size; i++)
+    {
+        x[i] = b[i];
+    }
+
+    while(n < n_iter)
+    {
+        double error = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            double sum = 0;
+            for (int j = 0; j < size; j++)
+            {
+                if (i != j)
+                {
+                    sum += A.values[i * size + j] * x[j];
+                }
+            }
+            // update x[i] after iterating each row
+            x[i] = (b[i] - sum) * (1 / A.values[i * size + i]);
+        }
+
+        // get the current error
+        error = get_error(A, b, x, size, error);
+
+        // if below the tolerance, ends the iteration
+        if (error < tol)
+            return;
+        // else iterates
+        else
+            n++;
+    }
+}
+
 
 template <class T>
 std::vector<double> Solver<T>::DenseGaussESolve(Matrix<T> &A, std::vector<double> &b)
@@ -146,85 +270,7 @@ std::vector<double> Solver<T>::DenseGaussEPPSolve(Matrix<T> &A, std::vector<doub
 
 }
 
-template <class T>
-std::vector<double> Solver<T>::DenseGaussSeidelSolve(Matrix<T> &A, std::vector<double> &b)
-{
-    // the output result of solver
-    std::vector<double> x;
-    const int n_iter = 100;
-    int n = 0;
-    int size = b.size();
-
-    // initial guess of x is b
-    x.reserve(size);
-    for (int i = 0; i < size; i++)
-    {
-        x.push_back(b[i]);
-    }
-
-    while(n < n_iter)
-    {
-
-        for (int i = 0; i < size; i++)
-        {
-            double sum = 0;
-            for (int j = 0; j < size; j++)
-            {
-                if (i != j)
-                {
-                    sum += A.values[i * size + j] * x[j];
-                }
-            }
-            x[i] = (b[i] - sum) / A.values[i * size + i];
-        }
-        n++;
-    }
-    return x;
-}
-
-template <class T>
-std::vector<double> Solver<T>::DenseJacobiSolve(Matrix<T> &A, std::vector<double> &b)
-{
-    // the output result of solver
-    std::vector<double> x;
-    const int n_iter = 100;
-    int n = 0;
-    int size = b.size();
-
-    // initial guess of x is b
-    x.reserve(size);
-    for (int i = 0; i < size; i++)
-    {
-        x.push_back(b[i]);
-    }
-
-    std::vector<double> x_new;
-    x_new.resize(size);
-
-    while(n < n_iter)
-    {
-
-        for (int i = 0; i < size; i++)
-        {
-            double sum = 0;
-            for (int j = 0; j < size; j++)
-            {
-                if (i != j)
-                {
-                    sum += A.values[i * size + j] * x[j];
-                }
-            }
-            x_new[i] = (b[i] - sum) / A.values[i * size + i];
-        }
-        for (int i = 0; i < size; i++)
-        {
-            x[i] = x_new[i];
-        }
-        n++;
-    }
-    return x;
-}
-
+ 
 template <class T>
 void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
 {
