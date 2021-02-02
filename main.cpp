@@ -1,13 +1,8 @@
 #include <iostream>
+#include <vector>
 #include "Matrix.h"
-#include "DenseJacobi.h"
-#include"Test.h"
-#include"DenseGaussianElimination.h"
-#include"DenseGaussianEliminationpp.h"
 #include "CSRMatrix.h"
-#include"DenseGaussSeidel.h"
-#include "DenseLUFactorisation.h"
-
+#include "Solver.h"
 
 int main()
 {
@@ -137,15 +132,15 @@ int main()
     int rows = 3;
     int cols = 3;
     double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
-    auto* A_LUFactorisation = new Matrix(rows, cols, input);
-    std::vector<double> b = { 2., 1., 5. };
-    DenseLUFactorisation sv;
-    std::vector<double> x = sv.solve(*A_LUFactorisation, b);
-    // expect output: -4.375 -2.75 2.5
-    for (int i = 0; i < x.size(); i++)
-    {
-        std::cout << x[i] << ' ';
-    }
+    new Matrix(rows, cols, input);
+//    auto* A_LUFactorisation = new Matrix(rows, cols, input);
+//    std::vector<double> b = { 2., 1., 5. };
+//    Solver<double> sv;
+//    std::vector<double> x = sv.DenseLUFactorisationSolve(*A_LUFactorisation, b);
+//    // expect output: -4.375 -2.75 2.5
+//    for (int i = 0; i < x.size(); i++)
+//    {
+//        std::cout << x[i] << ' ';
+//    }
 
-    
 }

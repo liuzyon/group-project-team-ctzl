@@ -14,7 +14,7 @@ public:
     Solver(/* args */);
     ~Solver();
 
-    virtual std::vector<double> solve(Matrix<T>& A, std::vector<double>& b) = 0;
+//    virtual std::vector<double> solve(Matrix<T>& A, std::vector<double>& b) = 0;
 
     // Dense Gaussian Elimination solve
     std::vector<double> DenseGaussESolve(Matrix<T>& A, std::vector<double>& b);

@@ -3,28 +3,6 @@
 
 CMakeFiles/assessment1.dir/CSRMatrix.cpp.o
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/CSRMatrix.cpp
-CMakeFiles/assessment1.dir/DenseJacobi.cpp.o
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseJacobi.cpp
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseJacobi.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Jacobi.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
-CMakeFiles/assessment1.dir/DenseLUFactorisation.cpp.o
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseLUFactorisation.cpp
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseLUFactorisation.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/LUFactorisation.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
-CMakeFiles/assessment1.dir/Jacobi.cpp.o
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Jacobi.cpp
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Jacobi.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
-CMakeFiles/assessment1.dir/LUFactorisation.cpp.o
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/LUFactorisation.cpp
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/LUFactorisation.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
 CMakeFiles/assessment1.dir/Matrix.cpp.o
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.cpp
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
@@ -34,16 +12,6 @@ CMakeFiles/assessment1.dir/Solver.cpp.o
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
 CMakeFiles/assessment1.dir/main.cpp.o
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/CSRMatrix.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseGaussSeidel.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseGaussianElimination.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseGaussianEliminationpp.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseJacobi.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/DenseLUFactorisation.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/GaussSeidel.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/GaussianElimination.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Jacobi.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/LUFactorisation.h
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
- /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.h
  /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/main.cpp

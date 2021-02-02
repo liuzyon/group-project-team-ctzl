@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CSRMATRIX_H
+#define CSRMATRIX_H
 #include "Matrix.h"
 
 template <class T>
@@ -33,3 +34,5 @@ public:
 private:
    
 };
+
+#endif

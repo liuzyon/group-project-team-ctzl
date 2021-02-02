@@ -1,11 +1,13 @@
-#pragma once
+#ifndef MATRIX_H
+#define MATRIX_H
 
 template <class T>
 class Matrix
 {
 public:
+    Matrix();
 
-   // constructor where we want to preallocate ourselves
+    // constructor where we want to preallocate ourselves
    Matrix(int rows, int cols, bool preallocate);
    // constructor where we already have allocated memory outside
    Matrix(int rows, int cols, T *values_ptr);
@@ -34,3 +36,5 @@ private:
 
    int size_of_values = -1;   
 };
+
+#endif
