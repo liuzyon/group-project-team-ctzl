@@ -1,5 +1,6 @@
 #include "Solver.h"
 #include "Matrix.h"
+#include "CSRMatrix.h"
 #include <math.h>
 #include <iostream>
 
@@ -21,6 +22,8 @@ double Solver<T>::get_error(Matrix<T>& A, T* b, T* x, int size, double error)
     // calculate error between expected x and our A*x
     // create a output pointer to store the result
     T* output = new T[size];
+    // matvecMult is a vitual funtion implemented in both dense and sparse matrix
+    // depends on different matrix as argument, different versions will be called
     A.matVecMult(x, output);
     // compute the error
     for (int i = 0; i < size; i++)
@@ -351,4 +354,127 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
 
     delete[] L;
     delete[] U;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// solver for sparse matrix
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+template <class T>
+void Solver<T>::sparse_jacobi_solver(CSRMatrix<T>& A, T* b, T* x, double tol)
+{
+    // max iteration if tolerance not reached
+    const int n_iter = 1000;
+    int n = 0;
+    int size = A.cols;
+
+    // initial guess of x is b
+    for (int i = 0; i < size; i++)
+    {
+        x[i] = b[i];
+    }
+
+    while(n < n_iter)
+    {
+        // x new here stores and updates all x values after 1 iteration
+        T* x_new = new T[size];
+        // error keeps track of the error after 1 iteration
+        double error = 0;
+
+        // loop over row
+        for (int i = 0; i < size; i++)
+        {
+            double sum = 0;
+            double dia_val = 0;
+            // loop over all elements in row i
+            for (int val_index = A.row_position[i]; val_index < A.row_position[i+1]; val_index++)
+            {
+                // get the column index of that element
+                int c_index = A.col_index[val_index];
+                // check if it is in the diaganol
+                if (i != c_index)
+                {
+                    sum += A.values[val_index] * x[c_index];
+                }
+                // get the diagnaol value
+                else
+                {
+                    dia_val = A.values[val_index];
+                }
+            }
+            x_new[i] = (b[i] - sum) * (1 / dia_val);
+        }
+        for (int i = 0; i < size; i++)
+            {
+                x[i] = x_new[i];
+            }
+        delete[] x_new;
+
+        // get the current error
+        error = get_error(A, b, x, size, error);
+
+        // if below the tolerance, ends the iteration
+        if (error < tol)
+            return;
+        // else iterates
+        else
+            n++;
+    }
+}
+
+
+
+template <class T>
+void Solver<T>::sparse_gauss_seidel_solver(CSRMatrix<T>& A, T* b, T* x, double tol)
+{
+    // max iteration if tolerance not reached
+    const int n_iter = 1000;
+    int n = 0;
+    int size = A.cols;
+
+    // initial guess of x is b
+    for (int i = 0; i < size; i++)
+    {
+        x[i] = b[i];
+    }
+
+    while(n < n_iter)
+    {
+        double error = 0;
+
+        // loop over row
+        for (int i = 0; i < size; i++)
+        {
+            double sum = 0;
+            double dia_val = 0;
+            // loop over all elements in row i
+            for (int val_index = A.row_position[i]; val_index < A.row_position[i+1]; val_index++)
+            {
+                // get the column index of that element
+                int c_index = A.col_index[val_index];
+                // check if it is in the diaganol
+                if (i != c_index)
+                {
+                    sum += A.values[val_index] * x[c_index];
+                }
+                // get the diagnaol value
+                else
+                {
+                    dia_val = A.values[val_index];
+                }
+            }
+            // update before getting into another row
+            x[i] = (b[i] - sum) * (1 / dia_val);
+        }
+
+        // get the current error
+        error = get_error(A, b, x, size, error);
+
+        // if below the tolerance, ends the iteration
+        if (error < tol)
+            return;
+        // else iterates
+        else
+            n++;
+    }
 }

@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include "Matrix.h"
+#include "CSRMatrix.h"
 #include <vector>
 
 template <class T> class Solver
@@ -22,6 +23,10 @@ public:
     void dense_jacobi_solver(Matrix<T>& A, T* b, T* x, double tol = 1e-6);
 
     void dense_gauss_seidel_solver(Matrix<T>& A, T* b, T* x, double tol = 1e-6);
+
+    void sparse_jacobi_solver(CSRMatrix<T>& A, T* b, T* x, double tol = 1e-6);
+
+    void sparse_gauss_seidel_solver(CSRMatrix<T>& A, T* b, T* x, double tol = 1e-6);
 
     // Dense Gaussian Elimination solve
     std::vector<double> DenseGaussESolve(Matrix<T>& A, std::vector<double>& b);
