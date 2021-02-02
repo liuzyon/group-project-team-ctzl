@@ -146,15 +146,34 @@ int main()
     cout << "Dense Matrix" << endl;
     int rows = 3;
     int cols = 3;
-    double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
-    Matrix<double> A_LUFactorisation(rows, cols, input);
+    double input[9] = { 4, -3, 1, -2, 3, -2, 4, 0, 9};
+    Matrix<double> A_dense(rows, cols, input);
     double *b = new double [3]{ 2., 1., 5.};
     double *x = new double [3];
     Solver<double> sv;
-    sv.DenseLUFactorisationSolve(A_LUFactorisation, b, x);
+    sv.DenseLUFactorisationSolve(A_dense, b, x);
     for (int i = 0; i < 3; ++i)
     {
         cout << x[i] << " ";
     }
+
+    cout << endl;
+    // if no input for user tolerance, default is 1e-6
+    sv.dense_jacobi_solver(A_dense, b, x, 0.01);
+    for (int i = 0; i < 3; ++i)
+    {
+        cout << x[i] << " ";
+    }
+
+    cout << endl;
+    // if no input for user tolerance, default is 1e-6
+    sv.dense_gauss_seidel_solver(A_dense, b, x, 0.1);
+    for (int i = 0; i < 3; ++i)
+    {
+        cout << x[i] << " ";
+    }
+
+    delete[] b;
+    delete[] x;
 
 }
