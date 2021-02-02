@@ -114,3 +114,23 @@ void Matrix<T>::matMatMult(Matrix& mat_left, Matrix& output)
       }
    }
 }
+
+// do matrix vector mutiplication
+template <class T>
+void Matrix<T>::matVecMult(T* input, T* output)
+{
+   // here I assume the output has been preallocated
+   // Set values to zero before hand
+   for (int i = 0; i < this->rows; i++)
+   {
+      output[i] = 0;
+   }
+
+   for(int i = 0; i < this->rows; i++)
+   {
+      for(int j = 0; j < this->cols; j++)
+      {
+         output[i] += this->values[i * this->cols + j] * input[j];
+      }
+   }
+}
