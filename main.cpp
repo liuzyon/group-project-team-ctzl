@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "Matrix.h"
+//#include "Matrix.cpp"
 #include "CSRMatrix.h"
 #include "Solver.h"
 
@@ -132,7 +133,7 @@ int main()
     int rows = 3;
     int cols = 3;
     double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
-    new Matrix(rows, cols, input);
+    Matrix<double> a(rows, cols, input);
 //    auto* A_LUFactorisation = new Matrix(rows, cols, input);
 //    std::vector<double> b = { 2., 1., 5. };
 //    Solver<double> sv;

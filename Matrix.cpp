@@ -1,11 +1,12 @@
 #include <iostream>
 #include "Matrix.h"
 
+
+// Constructor - using an initialisation list here
 template<class T>
 Matrix<T>::Matrix()
 {}
 
-// Constructor - using an initialisation list here
 template <class T>
 Matrix<T>::Matrix(int rows, int cols, bool preallocate): rows(rows), cols(cols), size_of_values(rows * cols), preallocated(preallocate)
 {

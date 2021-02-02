@@ -1,4 +1,3 @@
-
 #include "Solver.h"
 #include "Matrix.h"
 #include <iostream>
@@ -227,12 +226,11 @@ std::vector<double> Solver<T>::DenseJacobiSolve(Matrix<T> &A, std::vector<double
 }
 
 template <class T>
-std::vector<double> Solver<T>::DenseLUFactorisationSolve(Matrix<T> &A, std::vector<double> &b)
+void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
 {
-    std::vector<double> x;
-    x.resize(b.size());
+    int size = A.cols;
     //make sure the sizes of matixs are what we can calculate
-    if (A.cols != A.rows || A.cols != b.size()) {
+    if (A.cols != A.rows) {
         std::cerr << "Input dimensions for matrices don't match" << std::endl;
         return x;
     }
@@ -282,7 +280,6 @@ std::vector<double> Solver<T>::DenseLUFactorisationSolve(Matrix<T> &A, std::vect
     //Forward substitution
     // A = L, b = b, x = y
     std::vector<double> y;
-    int size = b.size();
     y.resize(size);
     for (int k = 0; k < size; ++k)
     {
@@ -308,5 +305,4 @@ std::vector<double> Solver<T>::DenseLUFactorisationSolve(Matrix<T> &A, std::vect
 
     delete[] L;
     delete[] U;
-    return x;
 }
