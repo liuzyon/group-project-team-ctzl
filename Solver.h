@@ -4,7 +4,7 @@
 #include "Matrix.h"
 #include <vector>
 
-class Solver
+template <class T> class Solver
 {
 protected:
     /* data */
@@ -14,18 +14,18 @@ public:
     Solver(/* args */);
     ~Solver();
 
-    virtual std::vector<double> solve(Matrix& A, std::vector<double>& b) = 0;
+    virtual std::vector<double> solve(Matrix<T>& A, std::vector<double>& b) = 0;
 
     // Dense Gaussian Elimination solve
-    std::vector<double> DenseGaussESolve(Matrix& A, std::vector<double>& b);
+    std::vector<double> DenseGaussESolve(Matrix<T>& A, std::vector<double>& b);
 
-    std::vector<double> DenseGaussEPPSolve(Matrix& A, std::vector<double>& b);
+    std::vector<double> DenseGaussEPPSolve(Matrix<T>& A, std::vector<double>& b);
 
-    std::vector<double> DenseGaussSeidelSolve(Matrix& A, std::vector<double>& b);
+    std::vector<double> DenseGaussSeidelSolve(Matrix<T>& A, std::vector<double>& b);
 
-    std::vector<double> DenseJacobiSolve(Matrix& A, std::vector<double>& b);
+    std::vector<double> DenseJacobiSolve(Matrix<T>& A, std::vector<double>& b);
 
-    std::vector<double> DenseLUFactorisationSolve(Matrix& A, std::vector<double>& b);
+    std::vector<double> DenseLUFactorisationSolve(Matrix<T>& A, std::vector<double>& b);
 
     void printA();
     void printb();

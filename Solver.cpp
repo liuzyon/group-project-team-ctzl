@@ -3,15 +3,18 @@
 #include "Matrix.h"
 #include <iostream>
 
-Solver::Solver(/* args */)
+template <class T>
+Solver<T>::Solver(/* args */)
 {
 }
 
-Solver::~Solver()
+template <class T>
+Solver<T>::~Solver()
 {
 }
 
-std::vector<double> Solver::DenseGaussESolve(Matrix &A, std::vector<double> &b)
+template <class T>
+std::vector<double> Solver<T>::DenseGaussESolve(Matrix<T> &A, std::vector<double> &b)
 {
     // This method is direct calculate the answer of Ax=b.
     // This solver is only for the matix which exist the only answer x and no 0 on diagnal entries.
@@ -61,7 +64,8 @@ std::vector<double> Solver::DenseGaussESolve(Matrix &A, std::vector<double> &b)
     return x;
 }
 
-std::vector<double> Solver::DenseGaussEPPSolve(Matrix &A, std::vector<double> &b)
+template <class T>
+std::vector<double> Solver<T>::DenseGaussEPPSolve(Matrix<T> &A, std::vector<double> &b)
 {
     // This method is direct calculate the answer of Ax=b.
     // This solver is only for the matix which exist the only answer x.
@@ -143,7 +147,8 @@ std::vector<double> Solver::DenseGaussEPPSolve(Matrix &A, std::vector<double> &b
 
 }
 
-std::vector<double> Solver::DenseGaussSeidelSolve(Matrix &A, std::vector<double> &b)
+template <class T>
+std::vector<double> Solver<T>::DenseGaussSeidelSolve(Matrix<T> &A, std::vector<double> &b)
 {
     // the output result of solver
     std::vector<double> x;
@@ -178,7 +183,8 @@ std::vector<double> Solver::DenseGaussSeidelSolve(Matrix &A, std::vector<double>
     return x;
 }
 
-std::vector<double> Solver::DenseJacobiSolve(Matrix &A, std::vector<double> &b)
+template <class T>
+std::vector<double> Solver<T>::DenseJacobiSolve(Matrix<T> &A, std::vector<double> &b)
 {
     // the output result of solver
     std::vector<double> x;
@@ -220,7 +226,8 @@ std::vector<double> Solver::DenseJacobiSolve(Matrix &A, std::vector<double> &b)
     return x;
 }
 
-std::vector<double> Solver::DenseLUFactorisationSolve(Matrix &A, std::vector<double> &b)
+template <class T>
+std::vector<double> Solver<T>::DenseLUFactorisationSolve(Matrix<T> &A, std::vector<double> &b)
 {
     std::vector<double> x;
     x.resize(b.size());
