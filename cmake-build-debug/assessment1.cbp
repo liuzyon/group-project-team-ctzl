@@ -98,6 +98,12 @@
 		<Unit filename="/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h">
 			<Option target="assessment1"/>
 		</Unit>
+		<Unit filename="/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.cpp">
+			<Option target="assessment1"/>
+		</Unit>
+		<Unit filename="/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.h">
+			<Option target="assessment1"/>
+		</Unit>
 		<Unit filename="/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/main.cpp">
 			<Option target="assessment1"/>
 		</Unit>

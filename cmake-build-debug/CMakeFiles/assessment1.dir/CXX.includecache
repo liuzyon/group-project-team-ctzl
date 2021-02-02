@@ -23,6 +23,8 @@ Solver.h
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
 Matrix.h
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
+math.h
+-
 iostream
 -
 
@@ -31,6 +33,18 @@ Matrix.h
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
 vector
 -
+
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.cpp
+iostream
+-
+Test.h
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.h
+Solver.h
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
+
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.h
+Matrix.h
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Matrix.h
 
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/main.cpp
 iostream
@@ -47,4 +61,8 @@ Solver.h
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.h
 Solver.cpp
 /Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Solver.cpp
+Test.h
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.h
+Test.cpp
+/Users/zhiyongliu/Documents/Imperial_Github/ACSE-5/assessment1/Test.cpp
 

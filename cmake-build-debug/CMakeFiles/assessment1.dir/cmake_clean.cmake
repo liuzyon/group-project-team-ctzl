@@ -2,6 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/assessment1.dir/CSRMatrix.cpp.o"
   "CMakeFiles/assessment1.dir/Matrix.cpp.o"
   "CMakeFiles/assessment1.dir/Solver.cpp.o"
+  "CMakeFiles/assessment1.dir/Test.cpp.o"
   "CMakeFiles/assessment1.dir/main.cpp.o"
   "assessment1"
   "assessment1.pdb"
