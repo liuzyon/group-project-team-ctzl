@@ -5,7 +5,7 @@ template <class T>
 class Matrix
 {
 public:
-    Matrix();
+    Matrix(const Matrix<T>& obj);
 
     // constructor where we want to preallocate ourselves
    Matrix(int rows, int cols, bool preallocate);

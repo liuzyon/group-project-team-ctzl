@@ -36,6 +36,13 @@ public:
 
     void DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x);
 
+    void DenseGMRES(Matrix<T>& A, T* b, T* x);
+
+    void unitization(T* input, T* output, int size);
+
+    T innerProduct(T* one, T* two, int size);
+
+
     void printA();
     void printb();
 };

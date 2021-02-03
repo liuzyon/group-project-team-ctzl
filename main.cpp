@@ -65,9 +65,6 @@ int main()
     printEndTag();
 
 
-    delete[] b;
-    delete[] x;
-
     cout << endl;
     cout << "------------------------------------------------------" << endl;
     cout << "          Diaganolly Dominant Dense Matrix" << endl;
@@ -108,6 +105,12 @@ int main()
     test_2.testDense(A_2, b_2, x_2);
     printEndTag();
 
+
+    sv.DenseGMRES(A, b, x);
+
+
+    delete[] b;
+    delete[] x;
     delete[] b_2;
     delete[] x_2;
 }

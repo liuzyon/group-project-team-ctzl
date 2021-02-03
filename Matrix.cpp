@@ -4,8 +4,14 @@
 
 // Constructor - using an initialisation list here
 template<class T>
-Matrix<T>::Matrix()
-{}
+Matrix<T>::Matrix(const Matrix<T>& obj)
+{
+    values = new T[obj.size_of_values];
+    for (int i = 0; i < obj.size_of_values; ++i)
+    {
+        values[i] = obj.values[i];
+    }
+}
 
 template <class T>
 Matrix<T>::Matrix(int rows, int cols, bool preallocate): rows(rows), cols(cols), size_of_values(rows * cols), preallocated(preallocate)
