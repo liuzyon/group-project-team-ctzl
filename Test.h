@@ -15,6 +15,7 @@ public:
 
     virtual ~Test();
 
-    bool testDense(Matrix<T>& A, T* b, T* x);
+    // test has a default tolerance of 1e-6
+    bool testDense(Matrix<T>& A, T* b, T* x, double tol = 1e-6);
 };
 #endif //ASSESSMENT1_TEST_H
