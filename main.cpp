@@ -3,6 +3,7 @@
 #include "Matrix.h"
 #include "Matrix.cpp"
 #include "CSRMatrix.h"
+#include "CSRMatrix.cpp"
 #include "Solver.h"
 #include "Solver.cpp"
 #include "Test.h"
@@ -15,6 +16,8 @@ void printVector(T* vector, int size);
 void printStartTag(string s);
 void printEndTag();
 
+// all tests here assume a 1e-6 default tolerance to test whether calculated results are accurate enough
+// all solvers which could take a user tolerance are now also using a 1e-6 default tolerance in order to pass the test
 int main()
 {
     cout << endl;
@@ -25,12 +28,12 @@ int main()
     cout << "   Create Example A and b:" << endl;
     cout << "--------------------------------" << endl;
     // create A, b, x
-    int rows = 3;
-    int cols = 3;
-    double input[9] = { 2, -3, 1, -2, 1, -2, 4, 0, 9};
+    int rows = 4;
+    int cols = 4;
+    double input[16] = {10, 2, 3, -5, 1, 14, 3, 2, -1, 4, 16, -4, 5, 4, 3, 21};
     Matrix<double> A(rows, cols, input);
-    double *b = new double [3]{ 2., 1., 5.};
-    double *x = new double [3];
+    double *b = new double [4]{ 2., 1., 5., 6.};
+    double *x = new double [4];
     cout << "A created:" << endl;
     A.printMatrix();
     cout << endl;
@@ -43,73 +46,95 @@ int main()
     cout << "   Initialization completed!" << endl;
     cout << "--------------------------------" << endl;
 
+    printStartTag("Dense Jacobi Solve (using default tolerance) ");
+    // can add another parameter as tolerance
+    sv.dense_jacobi_solver(A, b, x);
+    cout << "x solved:" << endl;
+    printVector(x, A.cols);
+    test.test_result(A, b, x);
+    printEndTag();
+
+    printStartTag("Dense Gauss-Seidel Solve (using default tolerance) ");
+    // can add another parameter as tolerance
+    sv.dense_gauss_seidel_solver(A, b, x);
+    cout << "x solved:" << endl;
+    printVector(x, A.cols);
+    test.test_result(A, b, x);
+    printEndTag();
+
     printStartTag("Dense Gaussian Elimination Solve");
     sv.DenseGaussESolve(A, b, x);
     cout << "x solved:" << endl;
     printVector(x, A.cols);
-    test.testDense(A, b, x);
+    test.test_result(A, b, x);
     printEndTag();
 
     printStartTag("Dense Gaussian Elimination PP Solve");
     sv.DenseGaussEPPSolve(A, b, x);
     cout << "x solved:" << endl;
     printVector(x, A.cols);
-    test.testDense(A, b, x);
+    test.test_result(A, b, x);
     printEndTag();
 
     printStartTag("Dense LU Factorisation Solve");
     sv.DenseLUFactorisationSolve(A, b, x);
     cout << "x solved:" << endl;
     printVector(x, A.cols);
-    test.testDense(A, b, x);
+    test.test_result(A, b, x);
     printEndTag();
 
 
     delete[] b;
     delete[] x;
 
+
     cout << endl;
     cout << "------------------------------------------------------" << endl;
-    cout << "          Diaganolly Dominant Dense Matrix" << endl;
+    cout << "                   Sparse Matrix" << endl;
     cout << "------------------------------------------------------" << endl;
     cout << "--------------------------------" << endl;
     cout << "   Create Example A and b:" << endl;
     cout << "--------------------------------" << endl;
     // create A, b, x
-    int rows_2 = 4;
-    int cols_2 = 4;
-    double input_2[16] = {10, 2, 3, -5, 1, 14, 3, 2, -1, 4, 16, -4, 5, 4, 3, 21};
-    Matrix<double> A_2(rows_2, cols_2, input_2);
-    double *b_2 = new double [4]{3, 2, 5, 4};
-    double *x_2 = new double [4];
-    cout << "A_2 created:" << endl;
-    A_2.printMatrix();
+    int rows_sparse = 5;
+    int cols_sparse = 5;
+    int nnzs = 12;
+    double values[12] = {10 ,2 ,3, 40, 5, 6, 70, 8, 9, 5, 12, 8};
+    int row_position[6] = {0, 2, 5, 9, 11, 12};
+    int col_index[12] = {0, 3, 0, 1, 3, 0, 2, 3, 4, 2, 3, 4};
+    CSRMatrix<double> A_sparse(rows_sparse, cols_sparse, nnzs, values, row_position, col_index);
+    double *b_sparse = new double [5]{5, 3, 8, 10, 4};
+    double *x_sparse = new double [5];
+    cout << "A_sparse created:" << endl;
+    A_sparse.printMatrix();
     cout << endl;
-    cout << "b_2 created:" << endl;
-    printVector(b_2, A_2.cols);
+    cout << "b_sparse created:" << endl;
+    printVector(b_sparse, A_sparse.cols);
 
-    Test<double> test_2;
-    Solver<double> sv_2;
+    Test<double> test_sparse;
+    Solver<double> sv_sparse;
     cout << "--------------------------------" << endl;
     cout << "   Initialization completed!" << endl;
     cout << "--------------------------------" << endl;
 
-    printStartTag("Dense Jacobi Solve (using default tolerance) ");
-    sv_2.dense_jacobi_solver(A_2, b_2, x_2, 1e-6);
-    cout << "x_2 solved:" << endl;
-    printVector(x_2, A_2.cols);
-    test_2.testDense(A_2, b_2, x_2);
+    printStartTag("Sparse Jacobi Solve (using default tolerance) ");
+    // can add another parameter as tolerance
+    sv_sparse.sparse_jacobi_solver(A_sparse, b_sparse, x_sparse);
+    cout << "x_sparse solved:" << endl;
+    printVector(x_sparse, A_sparse.cols);
+    test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
-    printStartTag("Dense Gauss-Seidel Solve (using default tolerance) ");
-    sv_2.dense_gauss_seidel_solver(A_2, b_2, x_2);
-    cout << "x_2 solved:" << endl;
-    printVector(x_2, A_2.cols);
-    test_2.testDense(A_2, b_2, x_2);
+    printStartTag("Sparse Gauss-Seidel Solve (using default tolerance) ");
+    // can add another parameter as tolerance
+    sv_sparse.sparse_gauss_seidel_solver(A_sparse, b_sparse, x_sparse);
+    cout << "x_sparse solved:" << endl;
+    printVector(x_sparse, A_sparse.cols);
+    test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
-    delete[] b_2;
-    delete[] x_2;
+    delete[] b_sparse;
+    delete[] x_sparse;
 }
 
 
