@@ -17,7 +17,7 @@ Test<T>::~Test()
 
 template <class T>
 // test has a default tolerance of 1e-6
-bool Test<T>::testDense(Matrix<T>& A, T* b, T* x, double tol)
+bool Test<T>::test_result(Matrix<T>& A, T* b, T* x, double tol)
 {
     cout << endl << "Check if Ax == b:" << endl;
     int size = A.cols;
