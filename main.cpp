@@ -67,7 +67,52 @@ int main()
 
     delete[] b;
     delete[] x;
+
+    cout << endl;
+    cout << "------------------------------------------------------" << endl;
+    cout << "          Diaganolly Dominant Dense Matrix" << endl;
+    cout << "------------------------------------------------------" << endl;
+    cout << "--------------------------------" << endl;
+    cout << "   Create Example A and b:" << endl;
+    cout << "--------------------------------" << endl;
+    // create A, b, x
+    int rows_2 = 4;
+    int cols_2 = 4;
+    double input_2[16] = {10, 2, 3, -5, 1, 14, 3, 2, -1, 4, 16, -4, 5, 4, 3, 21};
+    Matrix<double> A_2(rows_2, cols_2, input_2);
+    double *b_2 = new double [4]{3, 2, 5, 4};
+    double *x_2 = new double [4];
+    cout << "A_2 created:" << endl;
+    A_2.printMatrix();
+    cout << endl;
+    cout << "b_2 created:" << endl;
+    printVector(b_2, A_2.cols);
+
+    Test<double> test_2;
+    Solver<double> sv_2;
+    cout << "--------------------------------" << endl;
+    cout << "   Initialization completed!" << endl;
+    cout << "--------------------------------" << endl;
+
+    printStartTag("Dense Jacobi Solve (using default tolerance) ");
+    sv_2.dense_jacobi_solver(A_2, b_2, x_2, 1e-6);
+    cout << "x_2 solved:" << endl;
+    printVector(x_2, A_2.cols);
+    test_2.testDense(A_2, b_2, x_2);
+    printEndTag();
+
+    printStartTag("Dense Gauss-Seidel Solve (using default tolerance) ");
+    sv_2.dense_gauss_seidel_solver(A_2, b_2, x_2);
+    cout << "x_2 solved:" << endl;
+    printVector(x_2, A_2.cols);
+    test_2.testDense(A_2, b_2, x_2);
+    printEndTag();
+
+    delete[] b_2;
+    delete[] x_2;
 }
+
+
 
 template <class T>
 void printVector(T* vec, int size) {
