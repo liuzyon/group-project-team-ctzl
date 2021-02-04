@@ -492,7 +492,10 @@ void Solver<T>::DenseGMRES(Matrix<T> &A, T* b, T* x)
     // 由向量组b, Ab, A^2b,..., A^k-1v生成的向量空间称为k维Krylov子空间，记作K(k)
     // 求一组与之等价的规范正交向量组
     // 矩阵A的各列用来存放输入的列向量，b为输入的列向量，k为迭代次数
+
+    // 最大迭代步数IterMax
     int k = 4;
+
 //    std::unique_ptr<T*[]> K(new T*[k]);     //K向量组
     T **K_N = new T*[k];
     for (int i = 0; i < k; ++i)
@@ -500,78 +503,120 @@ void Solver<T>::DenseGMRES(Matrix<T> &A, T* b, T* x)
         K_N[i] = new T[n];
     }
 //    std::unique_ptr<T*[]> K_N(new T*[k]);   //与K等价的规范正交向量组
-    T *v0 = new T[n];
+//    T *v0 = new T[n];
 //    std::unique_ptr<T[]> v0(new T[n]);
 
-    unitization(b, v0, n);
+    T **H = new T*[k];
+    for (int i = 0; i < k; ++i)
+    {
+        H[i] = new T[k+1];
+    }
 
+
+
+    // 初值x0
+    T *x0 = new T[n];
+    // 将初值x0设为b0
+    for (int i = 0; i < n; ++i)
+    {
+        x0[i] = b[0];
+    }
+
+    T *Ax0 = new T[n];
+    A.matVecMult(x0, Ax0);
+    T *r0 = new T[n];
+    for (int i = 0; i < n; ++i)
+    {
+        r0[i] = b[i] - Ax0[0];
+    }
+
+    T beta = calMagnitude(r0, n);
+    T *v0 = new T[n];
+    unitization(r0, v0, n);
     // v1
     K_N[0] = v0;
 
-    for (int j = 1; j < k; ++j)
+    for (int j = 0; j < k; ++j)
     {
         // A_vj
-        T *A_v = new T[n];
-//        std::unique_ptr<T[]> A_v(new T[n]);
+        T *w = new T[n];
+        A.matVecMult(K_N[j], w);
 
-        A.matVecMult(K_N[j-1], A_v);
 
-        // 计算在每个vi上的投影向量之和
-//        std::unique_ptr<T[]> sum(new T[n]{0}); // 存储每个vi上的投影向量之和
-        T *sum = new T[n]{0};
-        for (int i = 0; i < j; ++i)
+        for (int i = 0; i <= j; ++i)
         {
-            // A_vj和每个已产生的vi作内积
-            T inner = innerProduct(A_v, K_N[i], n); // 计算(Avj, vi)
+            // A_vj和每个已产生的vi作内积: hij
 
+            H[i][j] = innerProduct(w, K_N[i], n); // 计算(Avj, vi)
+
+            // 计算 hij * vi
             T* pro_vec = new T[n];
-//            std::unique_ptr<T[]> pro_vec(new T[n]); //存储(Avj, vi)vi
             for (int l = 0; l < n; ++l)
             {
-                pro_vec[l] = K_N[i][l] * inner;
+                pro_vec[l] = K_N[i][l] * H[i][j];
             }
 
+            // w = w - hij * vj
             for (int l = 0; l < n; ++l)
             {
-                sum[l] += pro_vec[l];
+                w[l] -= pro_vec[l];
             }
 
             delete[] pro_vec;
         }
 
-        // 构造vj
-        T *vj = new T[n];
-//        std::unique_ptr<T[]> vj(new T[n]);
-        for (int i = 0; i < n; ++i)
-        {
-            vj[i] = A_v[i] - sum[i];
+        // hj+1,j
+        T hnext = calMagnitude(w, n);
+        if (hnext == 0) {
+            // m = j, break;
+            break;
         }
 
-//        std::unique_ptr<T[]> vj_N(new T[n]);
-        unitization(vj, K_N[j], n);
+        unitization(w, K_N[j+1], n);
+
+        // 检测是否停机
+        T* rj = new T[n];
+        // 如何计算残量rm的范数
 
 
-        delete[] vj;
+        for (int i = 0; i < j-1; ++i)
+        {
 
-        delete[] sum;
-        delete[] A_v;
+        }
+
+
+
+
+        delete[] w;
     }
 
 
-    for (int i = 0; i < k; ++i)
-    {
-        for (int j = 0; j < n; ++j)
-        {
-            std::cout << K_N[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
+//    for (int i = 0; i < k; ++i)
+//    {
+//        for (int j = 0; j < n; ++j)
+//        {
+//            std::cout << K_N[i][j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
 
 //    for (int i=0; i<k; i++) {
 //        delete[] K_N[i];
 //    }
     delete[] K_N;
     delete[] v0;
+}
+
+
+template <class T>
+T Solver<T>::calMagnitude(T *input, int size)
+{
+    T sum = 0;
+    for (int i = 0; i < size; ++i)
+    {
+        sum += pow(input[i], 2);
+    }
+    T magnitude = pow(sum, 0.5);
 }
 
 template <class T>

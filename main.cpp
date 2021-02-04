@@ -133,6 +133,8 @@ int main()
     test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
+    sv.DenseGMRES(A, b, x);
+
     delete[] b_sparse;
     delete[] x_sparse;
 }

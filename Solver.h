@@ -38,6 +38,8 @@ public:
 
     void DenseGMRES(Matrix<T>& A, T* b, T* x);
 
+    T calMagnitude(T* vec, int size);
+
     void unitization(T* input, T* output, int size);
 
     T innerProduct(T* one, T* two, int size);
