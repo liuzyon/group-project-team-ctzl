@@ -28,12 +28,20 @@ int main()
     cout << "   Create Example A and b:" << endl;
     cout << "--------------------------------" << endl;
     // create A, b, x
-    int rows = 4;
-    int cols = 4;
-    double input[16] = {10, 2, 3, -5, 1, 14, 3, 2, -1, 4, 16, -4, 5, 4, 3, 21};
+    int rows = 11;
+    int cols = 11;
+    double* input = new double[rows * cols];
+    for (int i = 0 ; i < rows * cols; i++)
+    {
+        input[i] = rand()%10 + 1;
+    }
+    for (int i = 0 ; i < rows; i++)
+    {
+        input[i * 12] = (rand()%10 + 10) * 10;
+    }
     Matrix<double> A(rows, cols, input);
-    double *b = new double [4]{ 2., 1., 5., 6.};
-    double *x = new double [4];
+    double *b = new double [rows]{1, 4, 6, 3, 5, 2, 6, 8, 6, 3, 9};
+    double *x = new double [rows];
     cout << "A created:" << endl;
     A.printMatrix();
     cout << endl;
@@ -92,6 +100,7 @@ int main()
 
     delete[] b;
     delete[] x;
+    delete[] input;
 
 
     cout << endl;
