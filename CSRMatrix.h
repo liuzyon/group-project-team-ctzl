@@ -20,7 +20,9 @@ public:
    // Perform some operations with our matrix
    void matMatMult(CSRMatrix<T>& mat_left, CSRMatrix<T>& output);
    // Perform some operations with our matrix
-   void matVecMult(T *input, T *output);   
+   void matVecMult(T *input, T *output);
+
+   int calRowIndex(int value_index);
 
    // Explicitly using the C++11 nullptr here
    int *row_position = nullptr;

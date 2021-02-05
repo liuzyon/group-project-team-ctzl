@@ -133,7 +133,40 @@ int main()
     test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
-    sv.DenseGMRES(A, b, x);
+//    sv.DenseGMRES(A, b, x);
+
+//    int rows_sparse = 5;
+//    int cols_sparse = 5;
+//    int nnzs = 12;
+//    double values[12] = {10 ,2 ,3, 40, 5, 6, 70, 8, 9, 5, 12, 8};
+//    int row_position[6] = {0, 2, 5, 9, 11, 12};
+//    int col_index[12] = {0, 3, 0, 1, 3, 0, 2, 3, 4, 2, 3, 4};
+//    CSRMatrix<double> A_sparse(rows_sparse, cols_sparse, nnzs, values, row_position, col_index);
+
+    int rows_a = 3;
+    int cols_a = 3;
+    int nnzs_a = 6;
+    double a_values[12] = {1, 2, 3, 4, 5, 6};
+    int a_row_position[6] = {0, 2, 3, 6};
+    int a_col_index[12] = {0, 2, 2, 0, 1, 2};
+    CSRMatrix<double> a_sparse(rows_a, cols_a, nnzs_a, a_values, a_row_position, a_col_index);
+
+    int rows_c = 3;
+    int cols_c = 3;
+    int nnzs_c = 6;
+    double c_values[12] = {1, 2, 3, 4, 5, 6};
+    int c_row_position[6] = {0, 2, 3, 6};
+    int c_col_index[12] = {0, 2, 2, 0, 1, 2};
+    CSRMatrix<double> c_sparse(rows_c, cols_c, nnzs_c, c_values, c_row_position, c_col_index);
+
+    CSRMatrix<double> output(3, 3, -1, false);
+
+    a_sparse.matMatMult(c_sparse, output);
+
+    cout << "print result nnzs:" << endl;
+    cout << output.nnzs << endl;
+
+
 
     delete[] b_sparse;
     delete[] x_sparse;
