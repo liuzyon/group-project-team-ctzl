@@ -108,22 +108,22 @@ void CSRMatrix<T>::matMatMult(CSRMatrix<T>& mat_left, CSRMatrix<T>& output)
       return;
    }
 
-   // Check if our output matrix has had space allocated to it
-   if (output.values != nullptr) 
-   {
-      // Check our dimensions match
-      if (this->rows != mat_left.cols || mat_left.rows != output.rows)
-      {
-         std::cerr << "Input dimensions for matrices don't match" << std::endl;
-         return;
-      }      
-   }
-   // The output hasn't been preallocated, so we are going to do that
-   else
-   {
-      std::cerr << "OUTPUT HASN'T BEEN ALLOCATED" << std::endl;
-
-   }
+//   // Check if our output matrix has had space allocated to it
+//   if (output.values != nullptr)
+//   {
+//      // Check our dimensions match
+//      if (this->rows != mat_left.cols || mat_left.rows != output.rows)
+//      {
+//         std::cerr << "Input dimensions for matrices don't match" << std::endl;
+//         return;
+//      }
+//   }
+//   // The output hasn't been preallocated, so we are going to do that
+//   else
+//   {
+//      std::cerr << "OUTPUT HASN'T BEEN ALLOCATED" << std::endl;
+//
+//   }
 
    // HOW DO WE SET THE SPARSITY OF OUR OUTPUT MATRIX HERE??
 
@@ -148,7 +148,6 @@ void CSRMatrix<T>::matMatMult(CSRMatrix<T>& mat_left, CSRMatrix<T>& output)
                 int row = mat_left.calRowIndex(i);  // result row: the row index of left value
                 int col = this->col_index[j];   // result column: the col index of right value
 
-                // 对已有的三元组进行遍历，查看新生成的是否可以合并
                 // Iterate all values in result values list
                 bool isExist = false;
                 for (int k = 0; k < res_values.size(); ++k)
@@ -213,33 +212,6 @@ void CSRMatrix<T>::matMatMult(CSRMatrix<T>& mat_left, CSRMatrix<T>& output)
     output.values = values;
     output.col_index = col_index;
     output.row_position = row_position;
-
-/*
- *  // print values to debug
-    std::cout << "values: " << std::endl;
-    for (int i = 0; i < res_values.size(); ++i)
-    {
-        std::cout << values[i] << " ";
-    }
-    std::cout << std::endl;
-
-    // print col_index to debug
-    std::cout << "col values: " << std::endl;
-    for (int i = 0; i < res_col_index.size(); ++i)
-    {
-        std::cout << col_index[i] << " ";
-    }
-    std::cout << std::endl;
-
-    // print row position to debug
-    std::cout << "row position: " << std::endl;
-    for (int i = 0; i < mat_left.rows+1; ++i)
-    {
-        std::cout << row_position[i] << " ";
-    }
-    std::cout << std::endl;
-    */
-
 
 }
 

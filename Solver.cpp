@@ -797,7 +797,7 @@ void Solver<T>::sparse_multigrid_solver(CSRMatrix<T>& A, T* b, T* x)
     Restr->printMatrix();
     std::cout << std::endl;
 
-    std::cerr << "Solver unfinished yet." << std::endl << std::endl;
+    std::cerr << "Sparse multigrid solver unfinished yet." << std::endl << std::endl;
 
     // I stopped here as I dont have time to finish it
     // But with the interpolation and restriction matrices all set up in CSR format
@@ -842,29 +842,29 @@ void Solver<T>::DenseGMRES(Matrix<T> &A, T* b, T* x)
         std::cerr << "Input dimensions for matrices don't match" << std::endl;
     }
 
+    std::cerr << std::endl << "GMRES unfinished yet, but part is implemented. please see the details of Solver<T>::DenseGMRES" << std::endl << std::endl;
 
     int n = A.cols; // dimension of each vector: n
 
+    // construct a copy A to use algorithm
     Matrix<T> A_copy(A);
 
-    // Arnoldi algorithm:
-    // 由向量组b, Ab, A^2b,..., A^k-1v生成的向量空间称为k维Krylov子空间，记作K(k)
-    // 求一组与之等价的规范正交向量组
-    // 矩阵A的各列用来存放输入的列向量，b为输入的列向量，k为迭代次数
+    // Krylov space: {b, Ab, A^2b, ..., A^k-1b}
+    // Arnoldi algorithm: part of GMRES
+    // To calculate equivalent canonical orthogonal vector sets: K_N
 
-    // 最大迭代步数IterMax
+    // Max iteration times
     int k = 4;
 
-//    std::unique_ptr<T*[]> K(new T*[k]);     //K向量组
+    // Equivalent canonical orthogonal vector sets: K_N
     T **K_N = new T*[k];
     for (int i = 0; i < k; ++i)
     {
         K_N[i] = new T[n];
     }
-//    std::unique_ptr<T*[]> K_N(new T*[k]);   //与K等价的规范正交向量组
-//    T *v0 = new T[n];
-//    std::unique_ptr<T[]> v0(new T[n]);
 
+
+    // Heisenberg
     T **H = new T*[k];
     for (int i = 0; i < k; ++i)
     {
@@ -872,24 +872,31 @@ void Solver<T>::DenseGMRES(Matrix<T> &A, T* b, T* x)
     }
 
 
-
-    // 初值x0
+    // init x: x0
     T *x0 = new T[n];
-    // 将初值x0设为b0
+    // set init value to b
     for (int i = 0; i < n; ++i)
     {
         x0[i] = b[0];
     }
 
+    // stop standard: epsilon
+    T epsilon = 0.5;
+
     T *Ax0 = new T[n];
     A.matVecMult(x0, Ax0);
+
+    // residual r0
     T *r0 = new T[n];
     for (int i = 0; i < n; ++i)
     {
         r0[i] = b[i] - Ax0[0];
     }
 
+    // magnitude of residual
     T beta = calMagnitude(r0, n);
+
+
     T *v0 = new T[n];
     unitization(r0, v0, n);
     // v1
@@ -901,14 +908,12 @@ void Solver<T>::DenseGMRES(Matrix<T> &A, T* b, T* x)
         T *w = new T[n];
         A.matVecMult(K_N[j], w);
 
-
         for (int i = 0; i <= j; ++i)
         {
-            // A_vj和每个已产生的vi作内积: hij
-
+            // calculate (Avj, vi), which is Hij
             H[i][j] = innerProduct(w, K_N[i], n); // 计算(Avj, vi)
 
-            // 计算 hij * vi
+            // calculate hij * vi
             T* pro_vec = new T[n];
             for (int l = 0; l < n; ++l)
             {
@@ -933,37 +938,35 @@ void Solver<T>::DenseGMRES(Matrix<T> &A, T* b, T* x)
 
         unitization(w, K_N[j+1], n);
 
-        // 检测是否停机
-        T* rj = new T[n];
-        // 如何计算残量rm的范数
+        // cal the residual rj
 
+        // calculate the relative residual rel_res: rel_res = |rj|/beta
 
-        for (int i = 0; i < j-1; ++i)
-        {
-
-        }
-
-
+        // if relative residual is less than stop standard epsilon predefined
+        // then m=j and break
 
 
         delete[] w;
     }
 
+    // y(m) = arg min ||beta * e1 - H[m+1], my||2
 
-//    for (int i = 0; i < k; ++i)
-//    {
-//        for (int j = 0; j < n; ++j)
-//        {
-//            std::cout << K_N[i][j] << " ";
-//        }
-//        std::cout << std::endl;
-//    }
+    // solve this least square problem and get y(m)
 
-//    for (int i=0; i<k; i++) {
-//        delete[] K_N[i];
-//    }
-    delete[] K_N;
+    // therefore x[m] = x[0] + V[m]y[m]
+
+
+    /*
+     * Note:
+     * Because I have no time, some part of this algorithm I did not implement, such as QR factorization to solve least square problem.
+     * However I implemented the Krylov space and Arnoldi algorithm of GMRES.
+     * */
+
+    delete[] H;
+    delete[] x0;
     delete[] v0;
+    delete[] r0;
+    delete[] Ax0;
 }
 
 

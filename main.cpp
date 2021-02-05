@@ -99,6 +99,11 @@ int main()
     test.test_result(A, b, x);
     printEndTag();
 
+    printStartTag("Dense GMRES Solve (only part of this algorithm finished) ");
+    // only part of DenseGMRES implemented
+    sv.DenseGMRES(A, b, x);
+    printEndTag();
+
     delete[] b;
     delete[] x;
     delete[] input;
@@ -153,6 +158,13 @@ int main()
     sv_sparse.sparse_multigrid_solver(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
+
+
+    cout << endl;
+    cout << "------------------------------------------------------" << endl;
+    cout << "                   Test CSRMatrix multiply" << endl;
+    cout << "------------------------------------------------------" << endl;
+
     int rows_a = 3;
     int cols_a = 3;
     int nnzs_a = 6;
@@ -160,6 +172,10 @@ int main()
     int a_row_position[6] = {0, 2, 3, 6};
     int a_col_index[12] = {0, 2, 2, 0, 1, 2};
     CSRMatrix<double> a_sparse(rows_a, cols_a, nnzs_a, a_values, a_row_position, a_col_index);
+    std::cout << "Right Matrix:" << endl;
+    a_sparse.printMatrix();
+
+    std::cout << std::endl;
 
     int rows_c = 3;
     int cols_c = 3;
@@ -168,16 +184,16 @@ int main()
     int c_row_position[6] = {0, 2, 3, 6};
     int c_col_index[12] = {0, 2, 2, 0, 1, 2};
     CSRMatrix<double> c_sparse(rows_c, cols_c, nnzs_c, c_values, c_row_position, c_col_index);
+    std::cout << "Left Matrix:" << endl;
+    c_sparse.printMatrix();
 
+    printStartTag("Call the matMatMult for two sparse matrices");
     CSRMatrix<double> output(3, 3, -1, false);
-
     a_sparse.matMatMult(c_sparse, output);
 
-    cout << "print result nnzs:" << endl;
-    cout << output.nnzs << endl;
-
-    // sv.DenseGMRES(A, b, x);
-
+    std::cout << "Output Matrix:" << endl;
+    output.printMatrix();
+    printEndTag();
 
     delete[] b_sparse;
     delete[] x_sparse;
