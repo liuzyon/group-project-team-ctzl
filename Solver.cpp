@@ -354,6 +354,7 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
 template <class T>
 void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
 {
+    
     if (A.rows % 2 == 0)
     {
         std::cerr << "            Caution!!!" << std::endl;
@@ -467,7 +468,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         }
         
         // std::cout << std::endl;
-        // std::cout << "x after pre-smmothing: ";
+        // std::cout << "x after pre-smoothing: ";
         // for (int i = 0; i < fine_size; i++)
         // {
         //     std::cout << x[i] << "  ";
@@ -492,6 +493,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         // matMatMult is a left multiplication
         Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, false);
         Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, false);
+        
         A.matMatMult(*Restr, *temp_mat);
 
         // temp_mat->printMatrix();
@@ -575,6 +577,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
     delete[] values_restr;
     delete Inter;
     delete Restr;
+
 }
 
 
