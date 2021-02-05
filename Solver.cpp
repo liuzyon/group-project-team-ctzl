@@ -374,51 +374,59 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
 
     // store the interpolation matrix as each col contain 1/2, 1, 1/2
     int elements = fine_size * coarse_size;
-    double* values = new double[elements];
+    double* values_inter = new double[elements];
 
     // fill with 0
     for(int i = 0; i < elements; i++)
     {
-        values[i] = 0;
+        values_inter[i] = 0;
     }
 
     // add in 1/2 1 at proper location
-    values[0] = 0.5;
-    values[elements - 1] = 0.5;
+    values_inter[0] = 0.5;
+    values_inter[elements - 1] = 0.5;
     // ignore first and last row, defined above
     for(int i = 1; i < fine_size - 1; i++)
     {
         if (i % 2 == 1)
-            values[(i - 1) / 2 + i * coarse_size] = 1;
+            values_inter[(i - 1) / 2 + i * coarse_size] = 1;
         if (i % 2 == 0)
         {
-            values[(i / 2) + (i * coarse_size)] = 0.5;
-            values[(i / 2) - 1 + (i * coarse_size)] = 0.5;    
+            values_inter[(i / 2) + (i * coarse_size)] = 0.5;
+            values_inter[(i / 2) - 1 + (i * coarse_size)] = 0.5;    
         }
     }
 
     // create the Interpolation matrix
     // the interplation matrix has a fine_size as number of rows and coarse_size as number of cols
-    Matrix<double>* Inter = new Matrix<double>(fine_size, coarse_size, values);
+    Matrix<double>* Inter = new Matrix<double>(fine_size, coarse_size, values_inter);
 
     // the Restrition matrix can be found as R = 1/2 * transpose of (I)
     // rows and cols will be swapped
     // fill with 0 first
+    double* values_restr = new double[elements];
     for (int i = 0; i < elements; i++)
     {
-        values[i] = 0;
+        values_restr[i] = 0;
     }
     // add in 1/2 1/4 at proper location
     for(int i = 0; i < coarse_size; i++)
     {
-        values[i * (fine_size + 2)] = 0.25;
-        values[1 + i * (fine_size + 2)] = 0.5;
-        values[2 + i * (fine_size + 2)] = 0.25;
+        values_restr[i * (fine_size + 2)] = 0.25;
+        values_restr[1 + i * (fine_size + 2)] = 0.5;
+        values_restr[2 + i * (fine_size + 2)] = 0.25;
     }
 
     // create the restriction matrix 
     // the restriction matrix has coarse_size as number of rows and fine_size as number of cols
-    Matrix<double>* Restr= new Matrix<double>(coarse_size, fine_size, values);
+    Matrix<double>* Restr= new Matrix<double>(coarse_size, fine_size, values_restr);
+
+    std::cout << "Interpolation martix used: ";
+    Inter->printMatrix();
+    std::cout << std::endl;
+    std::cout << "Restriction martix used: ";
+    Restr->printMatrix();
+    std::cout << std::endl;
 
     // Setup complete
 
@@ -562,7 +570,8 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
 
     }   
     std::cout << std::endl;
-    delete[] values;
+    delete[] values_inter;
+    delete[] values_restr;
     delete Inter;
     delete Restr;
 }
