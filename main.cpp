@@ -28,12 +28,21 @@ int main()
     cout << "   Create Example A and b:" << endl;
     cout << "--------------------------------" << endl;
     // create A, b, x
-    int rows = 4;
-    int cols = 4;
-    double input[16] = {10, 2, 3, -5, 1, 14, 3, 2, -1, 4, 16, -4, 5, 4, 3, 21};
+    int rows = 11;
+    int cols = 11;
+    double* input = new double[rows * cols];
+    for (int i = 0 ; i < rows * cols; i++)
+    {
+        input[i] = rand()%10 + 1;
+    }
+    // make diagnaolly dominant 
+    for (int i = 0 ; i < rows; i++)
+    {
+        input[i * (cols + 1)] = (rand()%10 + 10) * 10;
+    }
     Matrix<double> A(rows, cols, input);
-    double *b = new double [4]{ 2., 1., 5., 6.};
-    double *x = new double [4];
+    double *b = new double [rows]{1, 4, 6, 3, 5, 2, 6, 8, 6, 3, 9};
+    double *x = new double [rows];
     cout << "A created:" << endl;
     A.printMatrix();
     cout << endl;
@@ -83,9 +92,16 @@ int main()
     test.test_result(A, b, x);
     printEndTag();
 
+    printStartTag("Dense Multigrid Solve (only work with odd rows/cols)");
+    sv.dense_multigrid_solver(A, b, x);
+    cout << "x solved:" << endl;
+    printVector(x, A.cols);
+    test.test_result(A, b, x);
+    printEndTag();
 
     delete[] b;
     delete[] x;
+    delete[] input;
 
 
     cout << endl;
@@ -133,40 +149,7 @@ int main()
     test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
-//    sv.DenseGMRES(A, b, x);
-
-//    int rows_sparse = 5;
-//    int cols_sparse = 5;
-//    int nnzs = 12;
-//    double values[12] = {10 ,2 ,3, 40, 5, 6, 70, 8, 9, 5, 12, 8};
-//    int row_position[6] = {0, 2, 5, 9, 11, 12};
-//    int col_index[12] = {0, 3, 0, 1, 3, 0, 2, 3, 4, 2, 3, 4};
-//    CSRMatrix<double> A_sparse(rows_sparse, cols_sparse, nnzs, values, row_position, col_index);
-
-    int rows_a = 3;
-    int cols_a = 3;
-    int nnzs_a = 6;
-    double a_values[12] = {1, 2, 3, 4, 5, 6};
-    int a_row_position[6] = {0, 2, 3, 6};
-    int a_col_index[12] = {0, 2, 2, 0, 1, 2};
-    CSRMatrix<double> a_sparse(rows_a, cols_a, nnzs_a, a_values, a_row_position, a_col_index);
-
-    int rows_c = 3;
-    int cols_c = 3;
-    int nnzs_c = 6;
-    double c_values[12] = {1, 2, 3, 4, 5, 6};
-    int c_row_position[6] = {0, 2, 3, 6};
-    int c_col_index[12] = {0, 2, 2, 0, 1, 2};
-    CSRMatrix<double> c_sparse(rows_c, cols_c, nnzs_c, c_values, c_row_position, c_col_index);
-
-    CSRMatrix<double> output(3, 3, -1, false);
-
-    a_sparse.matMatMult(c_sparse, output);
-
-    cout << "print result nnzs:" << endl;
-    cout << output.nnzs << endl;
-
-
+    // sv.DenseGMRES(A, b, x);
 
     delete[] b_sparse;
     delete[] x_sparse;
