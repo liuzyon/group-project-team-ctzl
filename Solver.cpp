@@ -175,7 +175,6 @@ void Solver<T>::DenseGaussESolve(Matrix<T> A, T b[], T* x)
     }
 
     //backsubstitude
-
     //start at the end (row n-1) and work backwards
     for (int k = size - 1; k > -1; k--) {
         s = 0;
@@ -278,16 +277,13 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
         std::cerr << "Input dimensions for matrices don't match" << std::endl;
     }
 
-    double *L = new double[A.rows*A.cols]();
-    double *U = new double[A.rows*A.cols]();
+    T *L = new T[A.rows*A.cols]();
+    T *U = new T[A.rows*A.cols]();
 
     // copy A to U
-    for (int i = 0; i < A.rows; ++i)
+    for (int i = 0; i < A.rows*A.cols; ++i)
     {
-        for (int j = 0; j < A.cols; ++j)
-        {
-            U[i*A.cols+j] = A.values[i*A.cols+j];
-        }
+        U[i] = A.values[i];
     }
 
 
@@ -299,7 +295,7 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
         {
             // Define the scaling factor outside the innermost
             // loop otherwise its value gets changed.
-            double s = U[i*A.cols+k] / U[k*A.cols+k];
+            T s = U[i*A.cols+k] / U[k*A.cols+k];
             for (int j = k; j <A.cols ; ++j)
             {
                 U[i*A.cols+j] = U[i*A.cols+j] - s*U[k*A.cols+j];
@@ -322,11 +318,11 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
 
     //Forward substitution
     // A = L, b = b, x = y
-    std::vector<double> y;
+    std::vector<T> y;
     y.resize(size);
     for (int k = 0; k < size; ++k)
     {
-        double s = 0;
+        T s = 0;
         for (int j = 0; j < k; ++j)
         {
             s = s + L[k*A.cols+j] * y[j];
@@ -339,7 +335,7 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
     // A = U, b = y, x = x
     for (int k = size-1; k > -1 ; --k)
     {
-        double s = 0;
+        T s = 0;
         for (int j = k+1; j < size; ++j)
         {
             s = s + U[k*A.cols+j] * x[j];
