@@ -28,6 +28,8 @@ public:
 
     void sparse_gauss_seidel_solver(CSRMatrix<T>& A, T* b, T* x, double tol = 1e-6);
 
+    void dense_multigrid_solver(Matrix<T>& A, T* b, T* x);
+
     // Dense Gaussian Elimination solve
     void DenseGaussESolve(Matrix<T>& A, T* b, T* x);
 

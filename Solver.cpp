@@ -351,6 +351,217 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
     delete[] U;
 }
 
+template <class T>
+void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
+{
+    // for the multigrid method, we need a restriction matrix to change from fine grid to coarse grid
+    // and also a interpolation matrix to change from coarse grid back to the fine grid
+
+    // the following code only works for input matrix with odd number of rows/cols
+    // since I will define a coarse grid with double the size of patition in fine grid
+    // meaning a 7 element vector will be changed to 3 etc.
+    int fine_size = A.cols;
+    int coarse_size = (fine_size - 1) / 2;
+
+    // create the interpolation matrix fisrt
+    // the interplation matrix has a fine_size as number of rows and coarse_size as number of cols
+
+    // store the interpolation matrix as each col contain 1/2, 1, 1/2
+    int elements = fine_size * coarse_size;
+    double* values = new double[elements];
+
+    // fill with 0
+    for(int i = 0; i < elements; i++)
+    {
+        values[i] = 0;
+    }
+
+    // add in 1/2 1 at proper location
+    values[0] = 0.5;
+    values[elements - 1] = 0.5;
+    // ignore first and last row, defined above
+    for(int i = 1; i < fine_size - 1; i++)
+    {
+        if (i % 2 == 1)
+            values[(i - 1) / 2 + i * coarse_size] = 1;
+        if (i % 2 == 0)
+        {
+            values[(i / 2) + (i * coarse_size)] = 0.5;
+            values[(i / 2) - 1 + (i * coarse_size)] = 0.5;    
+        }
+    }
+
+    // create the Interpolation matrix
+    // the interplation matrix has a fine_size as number of rows and coarse_size as number of cols
+    Matrix<double>* Inter = new Matrix<double>(fine_size, coarse_size, values);
+
+    // the Restrition matrix can be found as R = 1/2 * transpose of (I)
+    // rows and cols will be swapped
+    // fill with 0 first
+    for (int i = 0; i < elements; i++)
+    {
+        values[i] = 0;
+    }
+    // add in 1/2 1/4 at proper location
+    for(int i = 0; i < coarse_size; i++)
+    {
+        values[i * (fine_size + 2)] = 0.25;
+        values[1 + i * (fine_size + 2)] = 0.5;
+        values[2 + i * (fine_size + 2)] = 0.25;
+    }
+
+    // create the restriction matrix 
+    // the restriction matrix has coarse_size as number of rows and fine_size as number of cols
+    Matrix<double>* Restr= new Matrix<double>(coarse_size, fine_size, values);
+
+    // Setup complete
+
+    double tol = 1;
+    const int n_iter = 10;
+    int n = 0;
+
+    // set x to be same as b at the beginning
+    for (int i = 0; i < fine_size; i++)
+    {
+        x[i] = b[i];
+    }
+
+    // stop when max iteration reached (now is 10), or a tolerance has been reached, now set to 1e-6
+    while(tol > 1e-6 && n < n_iter)
+    {
+        // Now I will use n iterations in dense gauss seidel to flatten the error, here I use 2
+        int n_pre_smooth = 0;
+        const int n_iter_pre_smooth = 2;
+        
+        while (n_pre_smooth < n_iter_pre_smooth)
+        {
+            for (int i = 0; i < fine_size; i++)
+            {
+                double sum = 0;
+                for (int j = 0; j < fine_size; j++)
+                {
+                    if (i != j)
+                    {
+                        sum += A.values[i * fine_size + j] * x[j];
+                    }
+                }
+                // update x[i] after iterating each row
+                x[i] = (b[i] - sum) * (1 / A.values[i * fine_size + i]);
+            }
+            n_pre_smooth++;
+        }
+        
+        // cout << endl;
+        // cout << "x after pre-smmothing: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     cout << x[i] << "  ";
+        // }
+
+        double* result = new double[fine_size];
+        double* error_fine = new double[fine_size];
+
+        // compute the residual error after cycles of gauss-seidel
+        A.matVecMult(x, result);
+        for (int i = 0; i < fine_size; i++)
+        {
+            error_fine[i] = b[i] - result[i];
+        }
+
+        // Now use the restriction matrix to change the error in fine grid to error in coarse grid
+        double* error_coarse = new double[coarse_size];
+        Restr->matVecMult(error_fine, error_coarse);
+
+        // Now change matrix A to coarse grid
+        // To do this, I use R * A * I
+        // matMatMult is a left multiplication
+        Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, false);
+        Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, false);
+        A.matMatMult(*Restr, *temp_mat);
+
+        // temp_mat->printMatrix();
+
+        Inter->matMatMult(*temp_mat, *A_coarse);
+
+        // A_coarse->printMatrix();
+
+        // using the matrix and error in coarse grid 
+        // x_coarse to store the output
+        double* x_coarse = new double[coarse_size];
+        // calculate A_coarse * x_coarse = error_coarse
+        // I use gaussian elimination solver to get the exact result
+        // not using gauss-seidel as it might not converge
+        DenseGaussESolve(*A_coarse, error_coarse, x_coarse);
+        
+        // use the interpolation matrix to change x_coarse back to fine grid and update x
+        double* x_fine = new double[fine_size];
+        Inter->matVecMult(x_coarse, x_fine);
+
+        // update x
+        for (int i = 0; i < fine_size; i++)
+        {
+            x[i] += x_fine[i];
+        }
+        
+        // cout << endl;
+        // cout << "x after restriction and interpolation: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     cout << x[i] << "  ";
+        // }     
+        // cout << endl;
+
+        // post smoothing using gauss seidel n times, here I use 2
+        int n_post_smooth = 0;
+        const int n_iter_post_smooth = 2;
+        
+        while (n_post_smooth < n_iter_post_smooth)
+        {
+            for (int i = 0; i < fine_size; i++)
+            {
+                double sum = 0;
+                for (int j = 0; j < fine_size; j++)
+                {
+                    if (i != j)
+                    {
+                        sum += A.values[i * fine_size + j] * x[j];
+                    }
+                }
+                // update x[i] after iterating each row
+                x[i] = (b[i] - sum) * (1 / A.values[i * fine_size + i]);
+            }
+            n_post_smooth++;
+        }
+
+        // cout << "x after post-smmothing: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     cout << x[i] << "  ";
+        // }
+        // cout << endl;
+
+        // get the current residual error
+        tol = 0;
+        tol = get_error(A, b, x, fine_size, tol);
+        // cout << "Current tolerance: " << tol << endl;
+        n++;
+
+        delete[] result;
+        delete[] error_fine;
+        delete[] error_coarse;
+        delete[] x_coarse;
+        delete[] x_fine;
+        delete temp_mat;
+        delete A_coarse;
+
+    }   
+    // cout << endl;
+    delete[] values;
+    delete Inter;
+    delete Restr;
+}
+
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // solver for sparse matrix
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
