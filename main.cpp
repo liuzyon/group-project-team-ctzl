@@ -35,9 +35,10 @@ int main()
     {
         input[i] = rand()%10 + 1;
     }
+    // make diagnaolly dominant 
     for (int i = 0 ; i < rows; i++)
     {
-        input[i * 12] = (rand()%10 + 10) * 10;
+        input[i * (cols + 1)] = (rand()%10 + 10) * 10;
     }
     Matrix<double> A(rows, cols, input);
     double *b = new double [rows]{1, 4, 6, 3, 5, 2, 6, 8, 6, 3, 9};
