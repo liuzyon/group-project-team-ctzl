@@ -83,6 +83,12 @@ int main()
     test.test_result(A, b, x);
     printEndTag();
 
+    printStartTag("Dense Multigrid Solve (only work with odd rows/cols)");
+    sv.dense_multigrid_solver(A, b, x);
+    cout << "x solved:" << endl;
+    printVector(x, A.cols);
+    test.test_result(A, b, x);
+    printEndTag();
 
     delete[] b;
     delete[] x;
@@ -133,7 +139,7 @@ int main()
     test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
-    sv.DenseGMRES(A, b, x);
+    // sv.DenseGMRES(A, b, x);
 
     delete[] b_sparse;
     delete[] x_sparse;

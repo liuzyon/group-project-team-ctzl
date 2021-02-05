@@ -354,6 +354,12 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
 template <class T>
 void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
 {
+    if (A.rows % 2 == 0)
+    {
+        std::cerr << "            Caution!!!" << std::endl;
+        std::cerr << "This case has not been implemented." << std::endl;
+        std::cerr << "Ignored if passed in test." << std::endl;
+    }
     // for the multigrid method, we need a restriction matrix to change from fine grid to coarse grid
     // and also a interpolation matrix to change from coarse grid back to the fine grid
 
@@ -451,12 +457,12 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             n_pre_smooth++;
         }
         
-        // cout << endl;
-        // cout << "x after pre-smmothing: ";
-        // for (int i = 0; i < fine_size; i++)
-        // {
-        //     cout << x[i] << "  ";
-        // }
+        std::cout << std::endl;
+        std::cout << "x after pre-smmothing: ";
+        for (int i = 0; i < fine_size; i++)
+        {
+            std::cout << x[i] << "  ";
+        }
 
         double* result = new double[fine_size];
         double* error_fine = new double[fine_size];
@@ -503,13 +509,13 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             x[i] += x_fine[i];
         }
         
-        // cout << endl;
-        // cout << "x after restriction and interpolation: ";
-        // for (int i = 0; i < fine_size; i++)
-        // {
-        //     cout << x[i] << "  ";
-        // }     
-        // cout << endl;
+        std::cout << std::endl;
+        std::cout << "x after restriction and interpolation: ";
+        for (int i = 0; i < fine_size; i++)
+        {
+            std::cout << x[i] << "  ";
+        }     
+        std::cout << std::endl;
 
         // post smoothing using gauss seidel n times, here I use 2
         int n_post_smooth = 0;
@@ -533,17 +539,17 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             n_post_smooth++;
         }
 
-        // cout << "x after post-smmothing: ";
-        // for (int i = 0; i < fine_size; i++)
-        // {
-        //     cout << x[i] << "  ";
-        // }
-        // cout << endl;
+        std::cout << "x after post-smmothing: ";
+        for (int i = 0; i < fine_size; i++)
+        {
+            std::cout << x[i] << "  ";
+        }
+        std::cout << std::endl;
 
         // get the current residual error
         tol = 0;
         tol = get_error(A, b, x, fine_size, tol);
-        // cout << "Current tolerance: " << tol << endl;
+        std::cout << "Current tolerance: " << tol << std::endl;
         n++;
 
         delete[] result;
@@ -555,7 +561,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         delete A_coarse;
 
     }   
-    // cout << endl;
+    std::cout << std::endl;
     delete[] values;
     delete Inter;
     delete Restr;
