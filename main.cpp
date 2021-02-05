@@ -70,7 +70,7 @@ int main()
     printVector(x, A.cols);
     test.test_result(A, b, x);
     printEndTag();
-
+    
     printStartTag("Dense Gaussian Elimination Solve");
     sv.DenseGaussESolve(A, b, x);
     cout << "x solved:" << endl;

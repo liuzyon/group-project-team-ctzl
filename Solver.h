@@ -33,9 +33,9 @@ public:
     void sparse_multigrid_solver(CSRMatrix<T>& A, T* b, T* x);
 
     // Dense Gaussian Elimination solve
-    void DenseGaussESolve(Matrix<T>& A, T* b, T* x);
+    void DenseGaussESolve(Matrix<T> A, T b[], T* x);
 
-    void DenseGaussEPPSolve(Matrix<T>& A, T* b, T* x);
+    void DenseGaussEPPSolve(Matrix<T> A, T b[], T* x);
 
 
     void DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x);

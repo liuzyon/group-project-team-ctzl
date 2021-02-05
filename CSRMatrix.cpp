@@ -1,4 +1,5 @@
 #include <iostream>
+#include<vector>
 #include "CSRMatrix.h"
 
 // Constructor - using an initialisation list here
