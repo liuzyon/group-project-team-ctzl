@@ -140,7 +140,7 @@ void Solver<T>::dense_gauss_seidel_solver(Matrix<T>& A, T* b, T* x, double tol)
 
 
 template <class T>
-void Solver<T>::DenseGaussESolve(Matrix<T> &A, T* b, T* x)
+void Solver<T>::DenseGaussESolve(Matrix<T> A, T b[], T* x)
 {
     // This method is direct calculate the answer of Ax=b.
     // This solver is only for the matix which exist the only answer x and no 0 on diagnal entries.
@@ -190,7 +190,7 @@ void Solver<T>::DenseGaussESolve(Matrix<T> &A, T* b, T* x)
 }
 
 template <class T>
-void Solver<T>::DenseGaussEPPSolve(Matrix<T> &A, T* b, T* x)
+void Solver<T>::DenseGaussEPPSolve(Matrix<T> A, T b[], T* x)
 {
     // This method is direct calculate the answer of Ax=b.
     // This solver is only for the matix which exist the only answer x.
