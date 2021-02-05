@@ -149,7 +149,9 @@ int main()
     test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
 
-
+    printStartTag("Sparse Multigrid Solve (only work with odd rows/cols) ");
+    sv_sparse.sparse_multigrid_solver(A_sparse, b_sparse, x_sparse);
+    printEndTag();
 
     int rows_a = 3;
     int cols_a = 3;

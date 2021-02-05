@@ -350,6 +350,7 @@ void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
 template <class T>
 void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
 {
+    
     if (A.rows % 2 == 0)
     {
         std::cerr << "            Caution!!!" << std::endl;
@@ -369,6 +370,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
     // the interplation matrix has a fine_size as number of rows and coarse_size as number of cols
 
     // store the interpolation matrix as each col contain 1/2, 1, 1/2
+    // see printMatrix()
     int elements = fine_size * coarse_size;
     double* values_inter = new double[elements];
 
@@ -461,12 +463,12 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             n_pre_smooth++;
         }
         
-        std::cout << std::endl;
-        std::cout << "x after pre-smmothing: ";
-        for (int i = 0; i < fine_size; i++)
-        {
-            std::cout << x[i] << "  ";
-        }
+        // std::cout << std::endl;
+        // std::cout << "x after pre-smoothing: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     std::cout << x[i] << "  ";
+        // }
 
         double* result = new double[fine_size];
         double* error_fine = new double[fine_size];
@@ -487,6 +489,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         // matMatMult is a left multiplication
         Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, false);
         Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, false);
+        
         A.matMatMult(*Restr, *temp_mat);
 
         // temp_mat->printMatrix();
@@ -513,13 +516,13 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             x[i] += x_fine[i];
         }
         
-        std::cout << std::endl;
-        std::cout << "x after restriction and interpolation: ";
-        for (int i = 0; i < fine_size; i++)
-        {
-            std::cout << x[i] << "  ";
-        }     
-        std::cout << std::endl;
+        // std::cout << std::endl;
+        // std::cout << "x after restriction and interpolation: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     std::cout << x[i] << "  ";
+        // }     
+        // std::cout << std::endl;
 
         // post smoothing using gauss seidel n times, here I use 2
         int n_post_smooth = 0;
@@ -543,17 +546,17 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             n_post_smooth++;
         }
 
-        std::cout << "x after post-smmothing: ";
-        for (int i = 0; i < fine_size; i++)
-        {
-            std::cout << x[i] << "  ";
-        }
-        std::cout << std::endl;
+        // std::cout << "x after post-smmothing: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     std::cout << x[i] << "  ";
+        // }
+        // std::cout << std::endl;
 
         // get the current residual error
         tol = 0;
         tol = get_error(A, b, x, fine_size, tol);
-        std::cout << "Current tolerance: " << tol << std::endl;
+        // std::cout << "Current tolerance: " << tol << std::endl;
         n++;
 
         delete[] result;
@@ -570,6 +573,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
     delete[] values_restr;
     delete Inter;
     delete Restr;
+
 }
 
 
@@ -694,6 +698,139 @@ void Solver<T>::sparse_gauss_seidel_solver(CSRMatrix<T>& A, T* b, T* x, double t
         else
             n++;
     }
+}
+
+template <class T>
+void Solver<T>::sparse_multigrid_solver(CSRMatrix<T>& A, T* b, T* x)
+{
+    if (A.rows % 2 == 0)
+    {
+        std::cerr << "            Caution!!!" << std::endl;
+        std::cerr << "This case has not been implemented." << std::endl;
+        std::cerr << "Ignored if passed in test." << std::endl;
+    }
+    // for the multigrid method, we need a restriction matrix to change from fine grid to coarse grid
+    // and also a interpolation matrix to change from coarse grid back to the fine grid
+
+    // the following code only works for input matrix with odd number of rows/cols
+    // since I will define a coarse grid with double the size of patition in fine grid
+    int fine_size = A.cols;
+    int coarse_size = (fine_size - 1) / 2;
+
+    // create the interpolation matrix fisrt
+    // the interplation matrix has a fine_size as number of rows and coarse_size as number of cols
+
+    // store the sparse interpolation matrix as each col contain 1/2, 1, 1/2
+    int nnzs = coarse_size * 3;
+    double* values_inter = new double[nnzs];
+    int* col_index_inter = new int[nnzs];
+    int* row_position_inter = new int[fine_size + 1];
+
+    int count = 0;
+    for (int i = 0; i < nnzs; i++)
+    {
+        if(i % 3 == 0 || i % 3 == 2)
+            values_inter[i] = 0.5;
+        else 
+            values_inter[i] = 1;
+
+        if(i % 3 == 0 && i != 0)
+            count++;
+        // define col_index used in CSRMatrix construction
+        col_index_inter[i] = count;
+    }
+
+    // define row position
+    row_position_inter[0] = 0;
+    row_position_inter[1] = 1;
+    row_position_inter[fine_size] = nnzs;
+    for (int i = 2; i < fine_size; i++)
+    {
+        if (i % 2 == 0)
+            row_position_inter[i] = row_position_inter[i - 1] + 1;
+        else 
+            row_position_inter[i] = row_position_inter[i - 1] + 2;
+
+    }
+
+    // create the Interpolation matrix
+    // the interplation matrix has a fine_size as number of rows and coarse_size as number of cols
+    CSRMatrix<double>* Inter = new CSRMatrix<double>(fine_size, coarse_size, nnzs, values_inter, row_position_inter, col_index_inter);
+
+    // the Restrition matrix can be found as R = 1/2 * transpose of (I)
+    // So all values will be halved, nnzs will not change 
+    // rows and cols will be swapped
+    double* values_restr = new double[nnzs];
+    int* col_index_restr = new int[nnzs];
+
+    for (int i = 0; i < nnzs; i++)
+    {
+        values_restr[i] = values_inter[i] / 2;
+    }
+
+    col_index_restr[0] = 0;
+    for (int i = 1; i < nnzs; i++)
+    {
+        if (i % 3 == 0)
+            col_index_restr[i] = col_index_restr[i - 1];
+        else   
+            col_index_restr[i] = col_index_restr[i - 1] + 1;
+    }
+
+
+    int* row_position_restr = new int[coarse_size + 1];
+    for (int i = 0; i < coarse_size + 1; i++)
+    {
+        row_position_restr[i] = i * 3;
+    }
+
+    // create the restriction matrix 
+    // the restriction matrix has coarse_size as number of rows and fine_size as number of cols
+    CSRMatrix<double>* Restr= new CSRMatrix<double>(coarse_size, fine_size, nnzs, values_restr, row_position_restr, col_index_restr);
+
+    // Setup complete
+
+    std::cout << "Interpolation martix used: ";
+    Inter->printMatrix();
+    std::cout << std::endl;
+    std::cout << "Restriction martix used: ";
+    Restr->printMatrix();
+    std::cout << std::endl;
+
+    std::cerr << "Solver unfinished yet." << std::endl << std::endl;
+
+    // I stopped here as I dont have time to finish it
+    // But with the interpolation and restriction matrices all set up in CSR format
+    // the rest should be quite similar with that in the dense_multigrid solver
+
+    // pre-smoothing using cycles of sparse_gauss_seidel_solver
+
+    // get the residual error
+
+    // using restriction matrix to change the error to a coaser grid error_coarse
+
+    // change the matrix A to a coaser grid A_coarse bt R * A * I
+
+    // calculate new x_coarse as A_coarse * x_coarse = error_coarse
+
+    // using interpolation matrix to change x_coarse to x_fine
+
+    // update x using x += x_fine;
+
+    // post-smmothing using cycles of gauss-seidel
+
+    // repeat all above processes if tolerance not reached
+    
+    delete[] values_restr;
+    delete[] col_index_restr;
+    delete[] row_position_restr;
+    delete[] values_inter;
+    delete[] col_index_inter;
+    delete[] row_position_inter;
+    
+    delete Inter;
+    delete Restr;
+    
 }
 
 template <class T>
