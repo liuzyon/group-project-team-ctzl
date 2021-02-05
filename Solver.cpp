@@ -373,6 +373,7 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
     // the interplation matrix has a fine_size as number of rows and coarse_size as number of cols
 
     // store the interpolation matrix as each col contain 1/2, 1, 1/2
+    // see printMatrix()
     int elements = fine_size * coarse_size;
     double* values_inter = new double[elements];
 
@@ -465,12 +466,12 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             n_pre_smooth++;
         }
         
-        std::cout << std::endl;
-        std::cout << "x after pre-smmothing: ";
-        for (int i = 0; i < fine_size; i++)
-        {
-            std::cout << x[i] << "  ";
-        }
+        // std::cout << std::endl;
+        // std::cout << "x after pre-smmothing: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     std::cout << x[i] << "  ";
+        // }
 
         double* result = new double[fine_size];
         double* error_fine = new double[fine_size];
@@ -517,13 +518,13 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             x[i] += x_fine[i];
         }
         
-        std::cout << std::endl;
-        std::cout << "x after restriction and interpolation: ";
-        for (int i = 0; i < fine_size; i++)
-        {
-            std::cout << x[i] << "  ";
-        }     
-        std::cout << std::endl;
+        // std::cout << std::endl;
+        // std::cout << "x after restriction and interpolation: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     std::cout << x[i] << "  ";
+        // }     
+        // std::cout << std::endl;
 
         // post smoothing using gauss seidel n times, here I use 2
         int n_post_smooth = 0;
@@ -547,17 +548,17 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
             n_post_smooth++;
         }
 
-        std::cout << "x after post-smmothing: ";
-        for (int i = 0; i < fine_size; i++)
-        {
-            std::cout << x[i] << "  ";
-        }
-        std::cout << std::endl;
+        // std::cout << "x after post-smmothing: ";
+        // for (int i = 0; i < fine_size; i++)
+        // {
+        //     std::cout << x[i] << "  ";
+        // }
+        // std::cout << std::endl;
 
         // get the current residual error
         tol = 0;
         tol = get_error(A, b, x, fine_size, tol);
-        std::cout << "Current tolerance: " << tol << std::endl;
+        // std::cout << "Current tolerance: " << tol << std::endl;
         n++;
 
         delete[] result;
