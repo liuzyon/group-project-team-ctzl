@@ -267,6 +267,74 @@ void Solver<T>::DenseGaussEPPSolve(Matrix<T> A, T b[], T* x)
 
 }
 
+template <class T>
+void Solver<T>::DenseCholeskySolve(Matrix<T>& A, T* b, T* x) {
+    //this is a solver for the real Symmetric positive definite matrix.
+    // this is similar for LUsolver the different part is the decompositon.
+    //in this solver A=L@L.T
+    int size = A.cols;
+    //make sure the sizes of matixs are what we can calculate
+    if (A.cols != A.rows) {
+        std::cerr << "Input dimensions for matrices don't match" << std::endl;
+    }
+
+    double* L = new double[A.rows * A.cols]();
+    double* U = new double[A.rows * A.cols]();
+    for (int k = 0; k < size; k++) {
+        T s = 0;
+        for (int i = 0; i < k; i++) {
+            s += L[k * size + i] * L[k * size + i];
+        }
+        L[k * size + k] = sqrt(A.values[k * size + k] - s);
+        for (int i = k + 1; i < size; i++) {
+            T s1 = 0;
+            for (int j = 0; j < k; j++) {
+                s1 += L[i * size + j] * L[k * size + j];
+            }
+            L[i * size + k] = (A.values[i * size + k] - s1) / L[k * size + k];
+        }
+    }
+    //U = transpose L
+
+    for (int i = 0; i < A.rows; i++) {
+        for (int j = 0; j < A.cols; j++) {
+            U[i * A.cols + j] = L[j * A.cols + i];
+        }
+    }
+
+
+    //Forward substitution
+    // A = L, b = b, x = y
+    std::vector<double> y;
+    y.resize(size);
+    for (int k = 0; k < size; ++k)
+    {
+        T s = 0;
+        for (int j = 0; j < k; ++j)
+        {
+            s = s + L[k * A.cols + j] * y[j];
+        }
+        y[k] = (b[k] - s) / L[k * A.cols + k];
+    }
+
+
+    //Backward substitution
+    // A = U, b = y, x = x
+    for (int k = size - 1; k > -1; --k)
+    {
+        T s = 0;
+        for (int j = k + 1; j < size; ++j)
+        {
+            s = s + U[k * A.cols + j] * x[j];
+        }
+        x[k] = (y[k] - s) / U[k * A.cols + k];
+    }
+
+    delete[] L;
+    delete[] U;
+}
+
+
  
 template <class T>
 void Solver<T>::DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x)
@@ -487,32 +555,20 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         // Now change matrix A to coarse grid
         // To do this, I use R * A * I
         // matMatMult is a left multiplication
-
-        // define some matrices to store values
-        double* values_temp = new double[coarse_size * fine_size];
-        for (int i = 0; i < coarse_size * fine_size; i++)
-        {
-            values_temp[i] = 0;
-        }
-        double* values_coarse = new double[coarse_size * coarse_size];
-        for (int i = 0; i < coarse_size * coarse_size; i++)
-        {
-            values_coarse[i] = 0;
-        }
-        Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, *values_temp);
-        Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, *values_coarse);
+        Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, false);
+        Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, false);
         
         A.matMatMult(*Restr, *temp_mat);
 
+        // temp_mat->printMatrix();
+
         Inter->matMatMult(*temp_mat, *A_coarse);
+
+        // A_coarse->printMatrix();
 
         // using the matrix and error in coarse grid 
         // x_coarse to store the output
         double* x_coarse = new double[coarse_size];
-        for (int i = 0; i < coarse_size; i++)
-        {
-            x_coarse[i] = 0;
-        }
         // calculate A_coarse * x_coarse = error_coarse
         // I use gaussian elimination solver to get the exact result
         // not using gauss-seidel as it might not converge
@@ -572,8 +628,6 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         n++;
 
         delete[] result;
-        delete[] values_temp;
-        delete[] values_coarse;
         delete[] error_fine;
         delete[] error_coarse;
         delete[] x_coarse;
@@ -713,6 +767,7 @@ void Solver<T>::sparse_gauss_seidel_solver(CSRMatrix<T>& A, T* b, T* x, double t
             n++;
     }
 }
+
 
 template <class T>
 void Solver<T>::sparse_multigrid_solver(CSRMatrix<T>& A, T* b, T* x)
@@ -993,6 +1048,7 @@ T Solver<T>::calMagnitude(T *input, int size)
         sum += pow(input[i], 2);
     }
     T magnitude = pow(sum, 0.5);
+    return magnitude;
 }
 
 template <class T>

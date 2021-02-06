@@ -37,6 +37,7 @@ public:
 
     void DenseGaussEPPSolve(Matrix<T> A, T b[], T* x);
 
+    void DenseCholeskySolve(Matrix<T>& A, T* b, T* x);
 
     void DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x);
 
