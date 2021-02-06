@@ -40,11 +40,33 @@ int main()
     {
         input[i * (cols + 1)] = (rand()%10 + 10) * 10;
     }
+    
     Matrix<double> A(rows, cols, input);
+
+    // symmetirx matrix for Cholesky solver
+    double* input1 = new double[rows * cols];
+    for (int i = 0; i < rows * cols; i++)
+    {
+        input1[i] = rand() % 10 + 1;
+    }
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            input1[i * cols + j] = input1[j * cols + i];
+        }
+    }
+    // make diagnaolly dominant 
+    for (int i = 0; i < rows; i++)
+    {
+        input1[i * (cols + 1)] = (rand() % 10 + 10) * 10;
+    }
+    Matrix<double> A1(rows, cols, input1);
     double *b = new double [rows]{1, 4, 6, 3, 5, 2, 6, 8, 6, 3, 9};
     double *x = new double [rows];
     cout << "A created:" << endl;
     A.printMatrix();
+    cout << endl;
+    cout << "A1 created:" << endl;
+    A1.printMatrix();
     cout << endl;
     cout << "b created:" << endl;
     printVector(b, A.cols);
@@ -99,15 +121,22 @@ int main()
     test.test_result(A, b, x);
     printEndTag();
 
-    printStartTag("Dense GMRES Solve (only part of this algorithm finished) ");
-    // only part of DenseGMRES implemented
-    sv.DenseGMRES(A, b, x);
+    printStartTag("Dense Cholesky Solve");
+    sv.DenseCholeskySolve(A1, b, x);
+    cout << "x solved:" << endl;
+    printVector(x, A1.cols);
+    test.test_result(A1, b, x);
     printEndTag();
+
+    //printStartTag("Dense GMRES Solve (only part of this algorithm finished) ");
+    //// only part of DenseGMRES implemented
+    //sv.DenseGMRES(A, b, x);
+    //printEndTag();
 
     delete[] b;
     delete[] x;
     delete[] input;
-
+    delete[] input1;
 
     cout << endl;
     cout << "------------------------------------------------------" << endl;
@@ -126,12 +155,31 @@ int main()
     CSRMatrix<double> A_sparse(rows_sparse, cols_sparse, nnzs, values, row_position, col_index);
     double *b_sparse = new double [5]{5, 3, 8, 10, 4};
     double *x_sparse = new double [5];
+    /*symmetric matrix 
+    int rows_sparse1 = 11;
+    int cols_sparse1 = 11;
+    int nnzs1 = 21;
+    double values1[21] = { 100 ,100 ,7, 3, 100, 8, 7, 100,100,6,6,100,8,100,100,12,12,100,100,3,100  };
+    int row_position1[12] = { 0, 1, 4, 6, 8 ,10,12,14,16,18,19,21};
+    int col_index1[21] = { 0, 1, 3, 10, 2, 6, 2, 3,4,5,4,5,2,6,7,8,7,8 ,9,1,10 };
+    CSRMatrix<double> A1_sparse(rows_sparse1, cols_sparse1, nnzs1, values1, row_position1, col_index1);
+    double* b1_sparse = new double[11];
+    for (int i = 0; i < 11; i++) {
+        b1_sparse[i] = i + 1;
+    }
+
+    double* x1_sparse = new double[11];*/
     cout << "A_sparse created:" << endl;
     A_sparse.printMatrix();
     cout << endl;
     cout << "b_sparse created:" << endl;
     printVector(b_sparse, A_sparse.cols);
 
+    /*cout << "A1_sparse created:" << endl;
+    A1_sparse.printMatrix();
+    cout << endl;
+    cout << "b1_sparse created:" << endl;
+    printVector(b1_sparse, A1_sparse.cols);*/
     Test<double> test_sparse;
     Solver<double> sv_sparse;
     cout << "--------------------------------" << endl;
@@ -153,6 +201,7 @@ int main()
     printVector(x_sparse, A_sparse.cols);
     test_sparse.test_result(A_sparse, b_sparse, x_sparse);
     printEndTag();
+
 
     printStartTag("Sparse Multigrid Solve (only work with odd rows/cols) ");
     sv_sparse.sparse_multigrid_solver(A_sparse, b_sparse, x_sparse);
@@ -197,6 +246,8 @@ int main()
 
     delete[] b_sparse;
     delete[] x_sparse;
+    /*delete[] b1_sparse;
+    delete[] x1_sparse;*/
 }
 
 
