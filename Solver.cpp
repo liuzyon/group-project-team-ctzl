@@ -487,20 +487,32 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         // Now change matrix A to coarse grid
         // To do this, I use R * A * I
         // matMatMult is a left multiplication
-        Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, false);
-        Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, false);
+
+        // define some matrices to store values
+        double* values_temp = new double[coarse_size * fine_size];
+        for (int i = 0; i < coarse_size * fine_size; i++)
+        {
+            values_temp[i] = 0;
+        }
+        double* values_coarse = new double[coarse_size * coarse_size];
+        for (int i = 0; i < coarse_size * coarse_size; i++)
+        {
+            values_coarse[i] = 0;
+        }
+        Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, *values_temp);
+        Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, *values_coarse);
         
         A.matMatMult(*Restr, *temp_mat);
 
-        // temp_mat->printMatrix();
-
         Inter->matMatMult(*temp_mat, *A_coarse);
-
-        // A_coarse->printMatrix();
 
         // using the matrix and error in coarse grid 
         // x_coarse to store the output
         double* x_coarse = new double[coarse_size];
+        for (int i = 0; i < coarse_size; i++)
+        {
+            x_coarse[i] = 0;
+        }
         // calculate A_coarse * x_coarse = error_coarse
         // I use gaussian elimination solver to get the exact result
         // not using gauss-seidel as it might not converge
@@ -560,6 +572,8 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         n++;
 
         delete[] result;
+        delete[] values_temp;
+        delete[] values_coarse;
         delete[] error_fine;
         delete[] error_coarse;
         delete[] x_coarse;
