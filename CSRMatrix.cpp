@@ -130,8 +130,8 @@ void CSRMatrix<T>::matMatMult(CSRMatrix<T>& mat_left, CSRMatrix<T>& output)
 
 
     // Store values and its index in row and col
-    std::vector<T> res_row_index;
-    std::vector<T> res_col_index;
+    std::vector<int> res_row_index;
+    std::vector<int> res_col_index;
     std::vector<T> res_values;
 
 
