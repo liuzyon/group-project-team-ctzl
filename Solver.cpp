@@ -973,12 +973,14 @@ void Solver<T>::DenseGMRES(Matrix<T> &A, T* b, T* x)
 template <class T>
 T Solver<T>::calMagnitude(T *input, int size)
 {
+    T magnitude = 0;
     T sum = 0;
     for (int i = 0; i < size; ++i)
     {
         sum += pow(input[i], 2);
     }
-    T magnitude = pow(sum, 0.5);
+    magnitude = pow(sum, 0.5);
+    return magnitude;
 }
 
 template <class T>

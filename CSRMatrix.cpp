@@ -220,11 +220,11 @@ void CSRMatrix<T>::matMatMult(CSRMatrix<T>& mat_left, CSRMatrix<T>& output)
 template <class T>
 int CSRMatrix<T>::calRowIndex(int value_index)
 {
-
     for (int i = 1; i < this->rows+1; ++i)
     {
         if (value_index < this->row_position[i]) {
             return i-1;
         }
     }
+    return -1;
 }
