@@ -128,10 +128,10 @@ int main()
     test.test_result(A1, b, x);
     printEndTag();
 
-    //printStartTag("Dense GMRES Solve (only part of this algorithm finished) ");
+    printStartTag("Dense GMRES Solve (only part of this algorithm finished) ");
     //// only part of DenseGMRES implemented
-    //sv.DenseGMRES(A, b, x);
-    //printEndTag();
+    sv.DenseGMRES(A, b, x);
+    printEndTag();
 
     delete[] b;
     delete[] x;
