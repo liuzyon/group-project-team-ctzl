@@ -130,7 +130,7 @@ int main()
 
     printStartTag("Dense GMRES Solve (only part of this algorithm finished) ");
     //// only part of DenseGMRES implemented
-    sv.DenseGMRES(A, b, x);
+    // sv.DenseGMRES(A, b, x);
     printEndTag();
 
     delete[] b;
