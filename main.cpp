@@ -166,11 +166,6 @@ int main()
     cout << "b_sparse created:" << endl;
     printVector(b1_sparse, A1_sparse.cols);
 
-    /*cout << "A1_sparse created:" << endl;
-    A1_sparse.printMatrix();
-    cout << endl;
-    cout << "b1_sparse created:" << endl;
-    printVector(b1_sparse, A1_sparse.cols);*/
     Test<double> test_sparse;
     Solver<double> sv_sparse;
     cout << "--------------------------------" << endl;
