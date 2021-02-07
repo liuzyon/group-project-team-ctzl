@@ -22,19 +22,22 @@ public:
     ~Solver();
 
 //    virtual std::vector<double> solve(Matrix<T>& A, std::vector<double>& b) = 0;
-
+    //**********iteration solver***************
     void dense_jacobi_solver(Matrix<T>& A, T* b, T* x, double tol = 1e-6);
 
     void dense_gauss_seidel_solver(Matrix<T>& A, T* b, T* x, double tol = 1e-6);
+
+    void DenseGMRES(Matrix<T>& A, T* b, T* x);
+
+    void dense_multigrid_solver(Matrix<T>& A, T* b, T* x);
 
     void sparse_jacobi_solver(CSRMatrix<T>& A, T* b, T* x, double tol = 1e-6);
 
     void sparse_gauss_seidel_solver(CSRMatrix<T>& A, T* b, T* x, double tol = 1e-6);
 
-    void dense_multigrid_solver(Matrix<T>& A, T* b, T* x);
     // this one has not been finished yet
     void sparse_multigrid_solver(CSRMatrix<T>& A, T* b, T* x);
-
+    //**********direct solver***************
     // Dense Gaussian Elimination solve
     void DenseGaussESolve(Matrix<T> A, T b[], T* x);
 
@@ -44,8 +47,10 @@ public:
 
     void DenseLUFactorisationSolve(Matrix<T>& A, T* b, T* x);
 
-    void DenseGMRES(Matrix<T>& A, T* b, T* x);
-
+    // this one has not been finished yet
+    void SparseLUFactorisationSolve(CSRMatrix<T>& A, T* b, T* x);
+    // this one has not been finished yet
+    void SparseCholeskySolve(CSRMatrix<T>& A, T* b, T* x);
 
 
     void printA();

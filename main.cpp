@@ -146,34 +146,25 @@ int main()
     cout << "   Create Example A and b:" << endl;
     cout << "--------------------------------" << endl;
     // create A, b, x
-    int rows_sparse = 5;
-    int cols_sparse = 5;
-    int nnzs = 12;
-    double values[12] = {10 ,2 ,3, 40, 5, 6, 70, 8, 9, 5, 12, 8};
-    int row_position[6] = {0, 2, 5, 9, 11, 12};
-    int col_index[12] = {0, 3, 0, 1, 3, 0, 2, 3, 4, 2, 3, 4};
-    CSRMatrix<double> A_sparse(rows_sparse, cols_sparse, nnzs, values, row_position, col_index);
-    double *b_sparse = new double [5]{5, 3, 8, 10, 4};
-    double *x_sparse = new double [5];
-    /*symmetric matrix 
+    //not symmetric matrix 
     int rows_sparse1 = 11;
     int cols_sparse1 = 11;
-    int nnzs1 = 21;
-    double values1[21] = { 100 ,100 ,7, 3, 100, 8, 7, 100,100,6,6,100,8,100,100,12,12,100,100,3,100  };
-    int row_position1[12] = { 0, 1, 4, 6, 8 ,10,12,14,16,18,19,21};
-    int col_index1[21] = { 0, 1, 3, 10, 2, 6, 2, 3,4,5,4,5,2,6,7,8,7,8 ,9,1,10 };
+    int nnzs1 = 20;
+    double values1[20] = { 100 ,100, 3, 100, 8, 7, 100,100,6,6,100,8,100,100,12,12,100,100,3,100  };
+    int row_position1[12] = { 0, 1, 3, 5, 7 ,9,11,13,15,17,18,20};
+    int col_index1[20] = { 0, 1, 10, 2, 6, 2, 3,4,5,4,5,2,6,7,8,7,8 ,9,1,10 };
     CSRMatrix<double> A1_sparse(rows_sparse1, cols_sparse1, nnzs1, values1, row_position1, col_index1);
     double* b1_sparse = new double[11];
     for (int i = 0; i < 11; i++) {
         b1_sparse[i] = i + 1;
     }
 
-    double* x1_sparse = new double[11];*/
+    double* x1_sparse = new double[11];
     cout << "A_sparse created:" << endl;
-    A_sparse.printMatrix();
+    A1_sparse.printMatrix();
     cout << endl;
     cout << "b_sparse created:" << endl;
-    printVector(b_sparse, A_sparse.cols);
+    printVector(b1_sparse, A1_sparse.cols);
 
     /*cout << "A1_sparse created:" << endl;
     A1_sparse.printMatrix();
@@ -188,23 +179,23 @@ int main()
 
     printStartTag("Sparse Jacobi Solve (using default tolerance) ");
     // can add another parameter as tolerance
-    sv_sparse.sparse_jacobi_solver(A_sparse, b_sparse, x_sparse);
+    sv_sparse.sparse_jacobi_solver(A1_sparse, b1_sparse, x1_sparse);
     cout << "x_sparse solved:" << endl;
-    printVector(x_sparse, A_sparse.cols);
-    test_sparse.test_result(A_sparse, b_sparse, x_sparse);
+    printVector(x1_sparse, A1_sparse.cols);
+    test_sparse.test_result(A1_sparse, b1_sparse, x1_sparse);
     printEndTag();
 
     printStartTag("Sparse Gauss-Seidel Solve (using default tolerance) ");
     // can add another parameter as tolerance
-    sv_sparse.sparse_gauss_seidel_solver(A_sparse, b_sparse, x_sparse);
+    sv_sparse.sparse_gauss_seidel_solver(A1_sparse, b1_sparse, x1_sparse);
     cout << "x_sparse solved:" << endl;
-    printVector(x_sparse, A_sparse.cols);
-    test_sparse.test_result(A_sparse, b_sparse, x_sparse);
+    printVector(x1_sparse, A1_sparse.cols);
+    test_sparse.test_result(A1_sparse, b1_sparse, x1_sparse);
     printEndTag();
 
 
     printStartTag("Sparse Multigrid Solve (only work with odd rows/cols) ");
-    sv_sparse.sparse_multigrid_solver(A_sparse, b_sparse, x_sparse);
+    sv_sparse.sparse_multigrid_solver(A1_sparse, b1_sparse, x1_sparse);
     printEndTag();
 
 
@@ -244,10 +235,8 @@ int main()
     output.printMatrix();
     printEndTag();
 
-    delete[] b_sparse;
-    delete[] x_sparse;
-    /*delete[] b1_sparse;
-    delete[] x1_sparse;*/
+    delete[] b1_sparse;
+    delete[] x1_sparse;
 }
 
 

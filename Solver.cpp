@@ -277,25 +277,28 @@ void Solver<T>::DenseCholeskySolve(Matrix<T>& A, T* b, T* x) {
     if (A.cols != A.rows) {
         std::cerr << "Input dimensions for matrices don't match" << std::endl;
     }
-
+    //lower matrix
     double* L = new double[A.rows * A.cols]();
+    //upper matrix
     double* U = new double[A.rows * A.cols]();
     for (int k = 0; k < size; k++) {
         T s = 0;
         for (int i = 0; i < k; i++) {
             s += L[k * size + i] * L[k * size + i];
         }
+        //get L[k,k] first
         L[k * size + k] = sqrt(A.values[k * size + k] - s);
         for (int i = k + 1; i < size; i++) {
             T s1 = 0;
             for (int j = 0; j < k; j++) {
                 s1 += L[i * size + j] * L[k * size + j];
             }
+            //calculateL[i,k]
             L[i * size + k] = (A.values[i * size + k] - s1) / L[k * size + k];
         }
     }
-    //U = transpose L
 
+    //U = transpose L
     for (int i = 0; i < A.rows; i++) {
         for (int j = 0; j < A.cols; j++) {
             U[i * A.cols + j] = L[j * A.cols + i];
@@ -1078,8 +1081,346 @@ T Solver<T>::innerProduct(T *one, T *two, int size)
 
 
 
+template <class T>
+void Solver<T>::SparseCholeskySolve(CSRMatrix<T>& A, T* b, T* x) {
+    //please do not run this method
+    //The code here is to show what I have done.
+    //This solver right now can not work very well.
+    //I have mention where I was stuck.
+    //when it could be fixed.
+    //This solver also need to input the size of matrix col_index and row_position.
+    //if you do not want pass only one matrix.
+
+    //this is a solver for the real Symmetric positive definite matrix.
+    // this is similar for LUsolver the different part is the decompositon.
+    //in this solver A=LL.T
+    //and I try to solve U first to avoid symbolic computation step.
+    // In this method The symbolic computation step usually use ELIMINATION TREES.
+    std::cerr << std::endl << "SparseCholeskySolve unfinished yet, but part is implemented." << std::endl << std::endl;
+    std::cerr << std::endl << "If you If are intreset in, please check code in solver.cpp." << std::endl << std::endl;
+    return;
+    int size = A.cols;
+    //make sure the sizes of matixs are what we can calculate
+    if (A.cols != A.rows) {
+        std::cerr << "Input dimensions for matrices don't match" << std::endl;
+    }
+    //use vector we can do not know nnzs first.
+    // and the L.T write in in the same way we save in CSR matrix.
+    std::vector<T> U_values;
+    std::vector<int> U_row_po;
+    std::vector<int> U_col_in;
+    U_row_po.push_back(0);
+
+    //input U[0,0]
+    U_values.push_back(sqrt(A.values[0]));
+    U_col_in.push_back(0);
+    int num = 1;//count number for row_position index.
+    //sizeof A.col_index
+    int size2 = 16;
 
 
+
+    // input U[0,n]
+    for (int val_index = 1; val_index < size2; val_index++) {
+        //find A[i,0]
+        if (A.col_index[val_index] == 0) {
+            //U[0,i] = A[i,0]/U[0,0]
+            U_values.push_back(A.values[val_index] / U_values[0]);
+            num += 1;
+            //find what is i in A[i,0]
+            //find thee row position of A.values[val_index]
+            int col_val_index = 0;
+            //go through the row_position index of A
+
+            //sizeof A.row_position
+            int size3 = 5;
+            for (int i = 0; i < size3; i++) {
+                // when value index meet the first number larger than itself.
+                // e.g. val_index=5(the 6th number in values vector stay in col 0)
+                // we have [0,3,6,8,...] in row_positon vector
+                //then we should find that 5 should in row 1.
+                //because the row 0 start with 1st number in values.
+                //the row 1 start with the 4th number in values.
+                //the row 2 start with the 7th number in values.(first large than 6)
+                //so we find the answer we find is row 1.
+                if (val_index < A.row_position[i]) {
+                    col_val_index = i - 1;
+                    break;//break this loop
+                }
+            }
+            // incase none entry has been input.
+            if (col_val_index != 0) {
+                U_col_in.push_back(col_val_index);
+            }
+
+        }
+    }
+    //row 0 the number of input is the number of next row start.
+    U_row_po.push_back(num);
+
+
+    //since we have input the first row of U 
+    //Then we start with k=1 to n
+    for (int k = 1; k < size; ++k) {
+        T s = 0;
+        // get all U entry from row 0 to row k-1
+        int end1 = U_row_po[k];
+        for (int val_index = 0; val_index < U_row_po[k]; val_index++) {
+            //get U[i,k]
+            if (U_col_in[val_index] == k) {
+                //s = sum of U[i,k]*U[i,k] for i from 0 to k
+                s += U_values[val_index] * U_values[val_index];
+            }
+        }
+        //find A[k,k]
+        T A_k_k = 0;
+        //in row k
+        for (int val_index = A.row_position[k]; val_index < A.row_position[k + 1]; val_index++) {
+            //find in row k the col index is k
+            if (A.col_index[val_index] == k) {
+                A_k_k = A.values[val_index];
+            }
+        }
+        //calculate U[k,k]
+        T U_k_k = sqrt(A_k_k - s);
+        //sincs U[k,k] is the first entry in the row U
+        // since we use positive definite matrix.
+        //U[k,k] must exist.
+        U_values.push_back(U_k_k);
+        int num2 = 1;//count number for row_position index.
+        U_col_in.push_back(k);
+
+        //****important***
+        //stuck here calculate U[j,i]*U[j,k]
+        //can find U[j,i]andU[j,k]
+        //****important***
+
+        //calculate U[k,i] for i>k
+        for (int i = k + 1; i < size; i++) {
+            T s1 = 0;
+            // for j from row 0 to row k-1
+            T U_j_i = 0;
+            T U_j_k = 0;
+            T mul = U_j_i * U_j_k;
+            //j is from row 0 to k-1
+            for (int val_index = 0; val_index < U_row_po[k]; val_index++) {
+                //for denote row values.
+                for (int j = 0; j < k; j++) {
+                    // if in the same row
+                    if (val_index <= U_row_po[j]) {
+                        U_j_i = 0;
+                        U_j_k = 0;
+                        if (U_col_in[val_index] == i || U_col_in[val_index] == k) {
+                            if (U_col_in[val_index] == i) {
+                                U_j_i = U_values[val_index];
+                            }
+                            else {
+                                U_j_k = U_values[val_index];
+                            }
+                            mul = U_j_i * U_j_k;
+                        }
+                    }
+                }
+                s1 += U_j_i * U_j_k;
+
+            }
+
+            //find A[i,k]
+            //find all enties in row i
+            T A_i_k = 0;
+            for (int val_index = A.row_position[i]; val_index < A.row_position[i + 1]; val_index++) {
+                //if the colum index of A is k
+                if (A.col_index[val_index] == k) {
+                    A_i_k = A.values[val_index];
+                }
+
+            }
+            // we write in the entry of k th row.
+            //this is U[k,i] i is from k+1 to n
+            T ans = (A_i_k - s1) / U_k_k;
+            // incase 0 entry.
+            if (ans != 0) {
+                U_values.push_back(ans);
+                num2 += 1;
+                U_col_in.push_back(i);
+            }
+        }
+        //we calculate the entrys in this row and add the row_positon number before it.
+        //we write this number in the k+1 th then the one before it is k.
+        U_row_po.push_back(num2 + U_row_po[k]);
+    }
+
+
+    //initialise CSR matrix L
+    std::vector<T> L_values;
+    std::vector<int> L_row_po;
+    std::vector<int> L_col_in;
+    U_row_po.push_back(0);
+
+    // transpose U to L.
+    //for every row
+    for (int i = 0; i < size; i++) {
+        //for U entries in that row
+        int num3 = 0;
+        //for the 0 row to i row
+        for (int val_index = 0; val_index < U_row_po[i + 1]; val_index++) {
+            //find ith col
+            if (L_col_in[val_index] == i) {
+                L_values.push_back(U_values[val_index]);
+                num += 1;
+                int col_val_index = -1;
+                //go through the row_position index of A
+                for (int i = 0; i < U_row_po[i + 1]; i++) {
+                    // when value index meet the first number larger than itself.
+                    if (val_index < A.row_position[i]) {
+                        col_val_index = i - 1;
+                        break;//break this loop
+                    }
+                }
+                // incase none entry has been input.
+                if (col_val_index != -1) {
+                    L_col_in.push_back(col_val_index);
+                }
+            }
+        }
+        L_row_po.push_back(num3 - U_row_po[i]);
+
+    }
+
+
+    //forward substitution
+    double* myb = new double[size];
+    myb[0] = b[0] / L_values[0];
+    for (int k = 1; k < size; k++) {
+        T s = 0;
+        //for all the entries in this row
+        for (int val_index1 = L_row_po[k]; val_index1 < L_row_po[k + 1]; val_index1++) {
+            s += L_values[val_index1] * myb[L_col_in[val_index1]];
+            //U[k,k] is the first item in the row k.
+            //L[k,k] = U[k,k];
+            myb[k] = (b[k] - s) / U_values[L_row_po[k]];
+
+        }
+    }
+
+
+
+    //backward substitution
+    //start at the end (row n-1) and work backwards
+    for (int k = size - 1; k < -1; k--) {
+        T s3 = 0;
+        //for all the entries in this row
+        for (int val_index = U_row_po[k]; val_index < U_row_po[k + 1]; val_index++) {
+            s3 += U_values[val_index] * x[U_col_in[val_index]];
+        }
+        //U[k,k] is the first item in the row k.
+        x[k] = (myb[k] - s3) / U_values[U_row_po[k]];
+    }
+    delete[] myb;
+}
+
+
+
+template <class T>
+void Solver<T>::SparseLUFactorisationSolve(CSRMatrix<T>& A, T* b, T* x) {
+    //please do not run this method
+    //The code here is to show what I have done.
+    //This solver right now can not work very well.
+    //because I did not do the symbolic computation step.
+    // I only do build U on A.
+    // This is not right.
+    // I fond the ELIMINATION TREES could find the sparsity of result.
+
+    std::cerr << std::endl << "SparseLUFactorisationSolve unfinished yet, but part is implemented." << std::endl << std::endl;
+    std::cerr << std::endl << "If are intreset in, please check code in solver.cpp." << std::endl << std::endl;
+    return;
+    int size = A.cols;
+    //make sure the sizes of matixs are what we can calculate
+    if (A.cols != A.rows) {
+        std::cerr << "Input dimensions for matrices don't match" << std::endl;
+    }
+    T A_k_val = 0;
+
+    //This L matrix write in dense matrix.
+    //not right.
+    //need to be improve.
+    T* L = new double[A.rows * A.cols];
+
+    //LU decomposition
+    //loop with row from 0 to n-1
+    for (int k = 0; k < size - 1; k++) {
+        //all row below row k
+        for (int i = k + 1; i < size; i++) {
+            //if Aik not equal to 0
+            //caliculate s;
+            //when you calculate Aik you can confirm in this 
+            //row the numbers before it are all 0.
+            T s1 = 0;
+            if (A.col_index[A.row_position[i]] != k) {
+                // calculate s;
+                //when you want get Akk you can confirm in this
+                // row the numbers before AKK are all 0.
+                s1 = A.values[A.row_position[i]] / A.values[A.row_position[k]];
+
+            }
+            //for the ith row goes all its column.
+            for (int val_index = A.row_position[i]; val_index < A.row_position[i + 1]; val_index++) {
+                //get A[k,A.col_index[val_index]]
+                for (int val_index2 = A.row_position[k]; val_index2 < A.row_position[k + 1]; val_index2++) {
+                    if (A.col_index[val_index2] == A.col_index[val_index]) {
+                        A_k_val = A.values[val_index2];
+                    }
+                }
+                //calculation U
+                A.values[val_index] = A.values[val_index] - s1 * A_k_val;
+
+            }
+            //right L in to dense.(not right)
+            L[i * A.cols + k] = s1;
+        }
+
+    }
+
+
+    // remember to add in the ones on the main diagonal to L
+    for (int i = 0; i < A.rows; ++i)
+    {
+        for (int j = 0; j < A.cols; ++j)
+        {
+            if (i == j) {
+                L[i * A.cols + j]++;
+            }
+        }
+    }
+
+    //Forward substitution
+    // A = L, b = b, x = myb
+    std::vector<double> myb;
+    myb.resize(size);
+    myb[0] = b[0] / L[0];
+    for (int k = 0; k < size; ++k)
+    {
+        T s2 = 0;
+        for (int j = 0; j < k; ++j)
+        {
+            s2 = s2 + L[k * A.cols + j] * myb[j];
+        }
+        myb[k] = (b[k] - s2) / L[k * A.cols + k];
+    }
+
+    //backward substitution
+    for (int k = size - 1; k < -1; k--) {
+        T s3 = 0;
+        for (int val_index = A.row_position[k]; val_index < A.row_position[k + 1]; val_index++) {
+            s3 = s3 + A.values[val_index] * x[A.col_index[val_index]];
+        }
+        x[k] = (myb[k] - s3) / A.values[A.row_position[k]];
+        //A_K_K is the first item of this row(this is not right)
+    }
+
+    delete[] L;
+
+}
 
 
 
