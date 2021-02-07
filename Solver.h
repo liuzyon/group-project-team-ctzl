@@ -9,6 +9,9 @@ template <class T> class Solver
 {
 private:
     double get_error(Matrix<T>& A, T* b, T* x, int size, double error);
+    T calMagnitude(T* vec, int size);
+    void unitization(T* input, T* output, int size);
+    T innerProduct(T* one, T* two, int size);
 
 protected:
     /* data */
@@ -43,11 +46,6 @@ public:
 
     void DenseGMRES(Matrix<T>& A, T* b, T* x);
 
-    T calMagnitude(T* vec, int size);
-
-    void unitization(T* input, T* output, int size);
-
-    T innerProduct(T* one, T* two, int size);
 
 
     void printA();
