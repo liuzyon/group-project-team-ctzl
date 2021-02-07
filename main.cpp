@@ -60,7 +60,10 @@ int main()
         input1[i * (cols + 1)] = (rand() % 10 + 10) * 10;
     }
     Matrix<double> A1(rows, cols, input1);
-    double *b = new double [rows]{1, 4, 6, 3, 5, 2, 6, 8, 6, 3, 9};
+    double *b = new double [rows];
+    for (int i = 0; i < rows; i++) {
+        b[i] = rand() % 5 + 1;
+    }
     double *x = new double [rows];
     cout << "A created:" << endl;
     A.printMatrix();
@@ -145,8 +148,7 @@ int main()
     cout << "--------------------------------" << endl;
     cout << "   Create Example A and b:" << endl;
     cout << "--------------------------------" << endl;
-    // create A, b, x
-    //not symmetric matrix 
+    // create A, b, x 
     int rows_sparse1 = 11;
     int cols_sparse1 = 11;
     int nnzs1 = 20;
