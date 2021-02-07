@@ -494,6 +494,19 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
     Restr->printMatrix();
     std::cout << std::endl;
 
+    // Now change matrix A to coarse grid
+    // To do this, I use R * A * I
+    // matMatMult is a left multiplication
+    double values_temp [coarse_size * fine_size];
+    double values_coarse [coarse_size * coarse_size];
+
+    Matrix<double> temp_mat(fine_size, coarse_size, values_temp);
+    Matrix<double> A_coarse(coarse_size, coarse_size, values_coarse);
+        
+    Inter->matMatMult(A, temp_mat);
+
+    temp_mat.matMatMult(*Restr, A_coarse);
+
     // Setup complete
 
     double tol = 1;
@@ -552,27 +565,13 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         double* error_coarse = new double[coarse_size];
         Restr->matVecMult(error_fine, error_coarse);
 
-        // Now change matrix A to coarse grid
-        // To do this, I use R * A * I
-        // matMatMult is a left multiplication
-        Matrix<double>* temp_mat = new Matrix<double>(coarse_size, fine_size, false);
-        Matrix<double>* A_coarse = new Matrix<double>(coarse_size, coarse_size, false);
-        
-        A.matMatMult(*Restr, *temp_mat);
-
-        // temp_mat->printMatrix();
-
-        Inter->matMatMult(*temp_mat, *A_coarse);
-
-        // A_coarse->printMatrix();
-
         // using the matrix and error in coarse grid 
         // x_coarse to store the output
         double* x_coarse = new double[coarse_size];
         // calculate A_coarse * x_coarse = error_coarse
-        // I use gaussian elimination solver to get the exact result
+        // I use LU solver to get the exact result
         // not using gauss-seidel as it might not converge
-        DenseGaussESolve(*A_coarse, error_coarse, x_coarse);
+        DenseLUFactorisationSolve(A_coarse, error_coarse, x_coarse);
         
         // use the interpolation matrix to change x_coarse back to fine grid and update x
         double* x_fine = new double[fine_size];
@@ -632,8 +631,6 @@ void Solver<T>::dense_multigrid_solver(Matrix<T>& A, T* b, T* x)
         delete[] error_coarse;
         delete[] x_coarse;
         delete[] x_fine;
-        delete temp_mat;
-        delete A_coarse;
 
     }   
     std::cout << std::endl;
